@@ -1,0 +1,12 @@
+# Large media files
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+*.env
+package-lock.json
+yarn.lock
+.vscode
+package-lock.json

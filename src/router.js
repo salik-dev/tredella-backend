@@ -3,32 +3,29 @@ const router = new Router();
 const { authenticate, isAdmin } = require("./middleware/authenticate");
 
 // ===================      All Controllers   ==================//
-
 const authController = require("./controller/auth");
 const categoryController = require("./controller/category");
 const subCategoryController = require("./controller/subCategory");
-const settingController = require("./controller/setting");
 const favoriteController = require("./controller/favorite");
-//==================== Validators =============================
+const settingController = require("./controller/setting");
 
+//==================== Validators =============================
 const authValidator = require("./validation/auth");
 const categoryValidator = require("./validation/category");
 
 //===================       Setting Route       ==============//
-
 router.put(
   "/updateSetting",
   authenticate,
   isAdmin,
   settingController.addRecord
 );
+router.get("/getSetting", authenticate, isAdmin, settingController.getRecord);
 
 //===================       Auth Route       ==============//
 router.post("/signUp", authValidator.signUp, authController.signUp);
 router.post("/signIn", authValidator.signInAdmin, authController.signInAdmin); //==== use For admin login through email
-
-/// for check user already register or not in google sign
-router.get("/checkUser/:query", authController.checkUser);
+router.post("/login", authValidator.logIn, authController.signIn); //==== use for user login through phone number
 
 router.post("/resetForgetPassword", authController.resetPassword);
 
@@ -38,7 +35,7 @@ router.put(
   authenticate,
   authController.updateProfile
 );
-
+router.get("/getProfile", authenticate, authController.getProfile);
 router.post(
   "/forgetPassword",
   authValidator.forgetPassword,
@@ -88,7 +85,13 @@ router.put(
   isAdmin,
   authController.resetPassword
 );
-
+router.get("/getCountriesList", authController.getCountriesList);
+router.get(
+  "/getUsersDropDown",
+  authenticate,
+  isAdmin,
+  authController.getUsersDropDown
+);
 router.delete(
   "/deleteUser",
   authenticate,
@@ -96,9 +99,7 @@ router.delete(
   authController.deleteRecord
 );
 router.put("/addFavourite", authenticate, authController.addFavourite);
-
 router.put("/removeFavourite", authenticate, authController.removeFavourite);
-
 router.get("/getFavourite", authenticate, authController.getFavourite);
 //===================       category Route       ==============//
 router.post(
@@ -134,8 +135,6 @@ router.delete(
   authenticate,
   subCategoryController.deleteRecord
 );
-
-//===================       biding Route       ==============//
 
 //===================       Favorite Auction Route       ==============//
 router.post("/addFavorite", authenticate, favoriteController.addFavorite);

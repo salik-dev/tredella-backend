@@ -17,7 +17,7 @@ const fetchCategoryList = async (condition) => {
         createdAt: 1,
       },
     },
-
+    
     {
       $sort: { _id: -1 },
     },
@@ -74,11 +74,7 @@ const addCategory = catchAsync(async (req, res) => {
 const editCategory = catchAsync(async (req, res) => {
   const data = req.body;
 
-  const Record = await generalService.findAndModifyRecord(
-    TableName,
-    { _id: data._id },
-    data
-  );
+  const Record = await generalService.findAndModifyRecord(TableName, { _id: data._id }, data);
   const RecordAll = await fetchCategoryList({ _id: Record._id });
 
   res.send({
@@ -91,14 +87,11 @@ const editCategory = catchAsync(async (req, res) => {
 const deleteCategory = catchAsync(async (req, res) => {
   const data = req.body;
 
-  let checkSubCategoryLink = await generalService.getRecord("SubCategory", {
-    parentId: data._id,
-  });
+  let checkSubCategoryLink = await generalService.getRecord("SubCategory", { parentId: data._id });
   if (checkSubCategoryLink && checkSubCategoryLink.length > 0) {
     res.send({
       status: constant.ERROR,
-      message:
-        "Some SubCategory link with this category. kindly unlink and try again",
+      message: "Some SubCategory link with this category. kindly unlink and try again",
     });
   } else {
     const Record = await generalService.deleteRecord(TableName, {
@@ -116,9 +109,7 @@ const deleteCategory = catchAsync(async (req, res) => {
 const getCategoryById = catchAsync(async (req, res) => {
   const data = JSON.parse(req.params.query);
   console.log(data);
-  const Record = await fetchCategoryList({
-    _id: mongoose.Types.ObjectId(data.id),
-  });
+  const Record = await fetchCategoryList({ _id: mongoose.Types.ObjectId(data.id) });
   console.log(Record);
   res.send({
     status: constant.SUCCESS,

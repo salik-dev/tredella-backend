@@ -1,6 +1,11 @@
 const joi = require("joi");
 const { ERROR, VALIDATION_ERROR_MESSAGE } = require("../utils/constant");
 
+const baseSchemaAuctionBid = {
+  _id: joi.string().required(),
+  name: joi.string().required(),
+};
+
 const addCategory = async (req, res, next) => {
   const data = req.body;
 

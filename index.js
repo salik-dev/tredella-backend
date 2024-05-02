@@ -10,13 +10,14 @@ const cors = require("cors");
 const cron = require("node-cron");
 const errorController = require("./src/utils/errorController");
 const AppError = require("./src/utils/appError");
+
 const logger = require("morgan");
+
 require("./src/utils/database");
 require("./src/utils/passport");
 
 const app = express();
 const server = http.createServer(app);
-
 
 app.use(cors());
 app.use(passport.initialize());
@@ -36,11 +37,8 @@ app.use(
 );
 
 app.use(express.static(path.join(__dirname, "public")));
-
 app.use(logger("dev"));
-
 app.use(router);
-
 app.all("*", (req, res, next) => {
   throw new AppError(`Requested Url not found!`, 404);
 });

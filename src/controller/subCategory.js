@@ -34,7 +34,7 @@ const fetchSubCategoryList = async (condition) => {
             $project: {
               _id: 1,
               name: 1,
-              formStructure: 1,
+              formStructure:1,
             },
           },
         ],
@@ -45,8 +45,8 @@ const fetchSubCategoryList = async (condition) => {
       $project: {
         _id: 1,
         categoryId: 1,
-        parentId: 1,
-        templateId: 1,
+        parentId:1,
+        templateId:1,
         categoryName: { $arrayElemAt: ["$categoryDetail.name", 0] },
         templateName: { $arrayElemAt: ["$formtemplate.name", 0] },
         formStructure: { $arrayElemAt: ["$formtemplate.formStructure", 0] },
@@ -62,6 +62,7 @@ const fetchSubCategoryList = async (condition) => {
 
   return await generalService.getRecordAggregate(TableName, aggregateArray);
 };
+
 const getRecord = catchAsync(async (req, res) => {
   //const data = JSON.parse(req.params.query);
   const data = req.body;
@@ -91,7 +92,7 @@ const getRecord = catchAsync(async (req, res) => {
 });
 const getSubCategoryByCategory = catchAsync(async (req, res) => {
   const data = JSON.parse(req.params.query);
-  let condition = { parentId: new mongoose.Types.ObjectId(data.parentId) };
+  let condition = {parentId: new mongoose.Types.ObjectId(data.parentId)};
   const Record = await fetchSubCategoryList(condition);
 
   res.send({
@@ -100,6 +101,7 @@ const getSubCategoryByCategory = catchAsync(async (req, res) => {
     Record,
   });
 });
+
 const addRecord = catchAsync(async (req, res) => {
   const data = req.body;
   const user = req.user;
@@ -116,22 +118,20 @@ const addRecord = catchAsync(async (req, res) => {
     Record: RecordObj[0],
   });
 });
+
 const editRecord = catchAsync(async (req, res) => {
   const data = req.body;
 
-  const Record = await generalService.findAndModifyRecord(
-    TableName,
-    { _id: data._id },
-    data
-  );
+  const Record = await generalService.findAndModifyRecord(TableName, { _id: data._id }, data);
   const RecordObj = await fetchSubCategoryList({ _id: Record._id });
-
+ 
   res.send({
     status: constant.SUCCESS,
     message: "update Record Successfully",
     Record: RecordObj[0],
   });
 });
+
 const deleteRecord = catchAsync(async (req, res) => {
   const data = req.body;
   const Record = await generalService.deleteRecord(TableName, {
@@ -144,10 +144,11 @@ const deleteRecord = catchAsync(async (req, res) => {
     Record: { _id: data._id },
   });
 });
+
 module.exports = {
   getRecord,
   addRecord,
   editRecord,
   deleteRecord,
-  getSubCategoryByCategory,
+  getSubCategoryByCategory
 };

@@ -221,9 +221,10 @@ const signInAdmin = catchAsync(async (req, res, next) => {
       }
 
       if (user.status === "active") {
-        let token = await user.generateAuthTokenWithOtp(otp);
+        let token = await user.generateAuthToken();
         let data = _.pick(user, userFieldSendFrontEnd);
         data.token = token;
+
         res.append("x-auth", token);
         res.append("Access-Control-Expose-Headers", "x-auth");
 
@@ -332,7 +333,13 @@ const forgetPassword = catchAsync(async (req, res) => {
       if (Record[0].role === "superAdmin") {
         url = process.env.SUPER_ADMIN_URL + "/setNewPassword/" + authToken;
       }
-
+      console.log("==========forget password url========", url);
+      // const subjectForgotPassword = `Reset Password Email for ${process.env.PROJECT_NAME}`;
+      // const sent = await sendEmail(
+      //   email,
+      //   subjectForgotPassword,
+      //   emailTemplate.forgetPasswordEmail(url)
+      // );
       const sent = "d";
       console.log("Record " + Record);
       if (sent) {
@@ -717,7 +724,7 @@ const removeFavourite = catchAsync(async (req, res) => {
 const getFavourite = catchAsync(async (req, res) => {
   const user = req.user;
   //console.log("==user==",user)
-  const Record = await generalService.getRecord("Auction", {
+  const Record = await generalService.getRecord("Product", {
     _id: { $in: user.favourites },
   });
   //console.log(Record)
@@ -732,28 +739,21 @@ module.exports = {
   signUp,
   addUser,
   signIn,
-  resetPasswordRequest,
   signInAdmin,
   editUser,
   updateStatus,
-  verifyOtp,
   updateProfile,
   getProfile,
   resetPassword,
   forgetPassword,
   setNewPassword,
   changePassword,
-  resendVerificationCode,
   getUsers,
   getCountriesList,
   getUsersDropDown,
-  checkOTP,
   deleteRecord,
   addFavourite,
   removeFavourite,
   getFavourite,
-  verifyOtpForReset,
-  addNewProfile,
-  contactEmail,
   checkUser,
 };

@@ -37,7 +37,7 @@ mongoose.connection.on("error", function (error) {
 });
 
 const url = `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}?retryWrites=true&w=majority`;
-console.log("==== database url ====", url);
+console.log("==== database url ====",url)
 mongoose.connect(url, {
   useNewUrlParser: true,
 });

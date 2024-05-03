@@ -17,15 +17,16 @@ passport.deserializeUser((id, done) => {
  * Sign in using Email and Password.
  */
 passport.use(
-  new LocalStrategy({ usernameField: "phoneNumber" }, (phoneNumber, password, done) => {
+  new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
     const User = mongoose.model(`User`);
-    console.log("===== phoneNumber", phoneNumber);
-    User.findOne({ phoneNumber: phoneNumber }, (err, user) => {
+    User.findOne({ email: email }, (err, user) => {
       if (err) {
         return done(err);
       }
       if (!user) {
-        return done(null, false, { msg: `phoneNumber ${phoneNumber} not found.` });
+        return done(null, false, {
+          msg: `email ${email} not found.`,
+        });
       }
       user.comparePassword(password, async (err, isMatch) => {
         if (err) {
@@ -36,7 +37,7 @@ passport.use(
           // user.token = token;
           return done(null, user);
         }
-        return done(null, false, { msg: "Invalid phoneNumber or password." });
+        return done(null, false, { msg: "Invalid email or password." });
       });
       // return done(null, user);
     });
@@ -48,28 +49,33 @@ passport.use(
  */
 passport.use(
   "local-user",
-  new LocalStrategy({ usernameField: "phoneNumber" }, (phoneNumber, password, done) => {
-    const User = mongoose.model(`User`);
+  new LocalStrategy(
+    { usernameField: "email" },
+    (email, password, done) => {
+      const User = mongoose.model(`User`);
 
-    User.findOne({ phoneNumber: phoneNumber }, (err, user) => {
-      if (err) {
-        return done(err);
-      }
-      if (!user) {
-        return done(null, false, { msg: `PhoneNumber ${phoneNumber} not found.` });
-      }
-
-      user.comparePassword(password, async (err, isMatch) => {
+      User.findOne({ email: email }, (err, user) => {
         if (err) {
           return done(err);
         }
-        if (isMatch) {
-          let token = await user.generateAuthToken();
-          user.token = token;
-          return done(null, user);
+        if (!user) {
+          return done(null, false, {
+            msg: `email ${email} not found.`,
+          });
         }
-        return done(null, false, { msg: "Invalid phoneNumber or password." });
+
+        user.comparePassword(password, async (err, isMatch) => {
+          if (err) {
+            return done(err);
+          }
+          if (isMatch) {
+            let token = await user.generateAuthToken();
+            user.token = token;
+            return done(null, user);
+          }
+          return done(null, false, { msg: "Invalid email or password." });
+        });
       });
-    });
-  })
+    }
+  )
 );

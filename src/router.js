@@ -4,14 +4,83 @@ const { authenticate, isAdmin } = require("./middleware/authenticate");
 
 // ===================      All Controllers   ==================//
 const authController = require("./controller/auth");
-const categoryController = require("./controller/category");
-const subCategoryController = require("./controller/subCategory");
+const retailCategoryController = require("./controller/retailCategory");
+const retailSubCategoryController = require("./controller/retailSubCategory");
+const wholeSellerCategoryController = require("./controller/wholeSellerCategory");
+const wholeSellerSubCategoryController = require("./controller/wholeSellerSubCategory");
 const favoriteController = require("./controller/favorite");
 const settingController = require("./controller/setting");
 
 //==================== Validators =============================
 const authValidator = require("./validation/auth");
 const categoryValidator = require("./validation/category");
+
+//================== AUTH ==========================//
+router.post("/login", authValidator.logIn, authController.signIn);
+
+//================== Category ==========================//
+router.post(
+  "/add-retailCategory",
+  categoryValidator.addCategory,
+  authenticate,
+  retailCategoryController.addCategory
+);
+router.put(
+  "/edit-retailCategory",
+  categoryValidator.editCategory,
+  authenticate,
+  retailCategoryController.editCategory
+);
+router.get("/get-retailCategory/:query", retailCategoryController.getCategory);
+
+router.post(
+  "/add-wholeSellerCategory",
+  categoryValidator.addCategory,
+  authenticate,
+  wholeSellerCategoryController.addCategory
+);
+router.put(
+  "/edit-wholeSellerCategory",
+  categoryValidator.editCategory,
+  authenticate,
+  wholeSellerCategoryController.editCategory
+);
+router.get(
+  "/get-wholeSellerCategory/:query",
+  wholeSellerCategoryController.getCategory
+);
+
+//================== Sub Category ==========================//
+
+router.post(
+  "/add-retailSubCategory",
+  authenticate,
+  retailSubCategoryController.addRecord
+);
+router.put(
+  "/edit-retailSubCategory",
+  authenticate,
+  retailSubCategoryController.editRecord
+);
+
+router.get(
+  "/get-retailSubCategory/:query",
+  retailSubCategoryController.getRecord
+);
+router.post(
+  "/add-wholeSellerSubCategory",
+  authenticate,
+  wholeSellerSubCategoryController.addRecord
+);
+router.put(
+  "/edit-wholeSellerSubCategory",
+  authenticate,
+  wholeSellerSubCategoryController.editRecord
+);
+router.get(
+  "/get-wholeSellerSubCategory/:query",
+  wholeSellerSubCategoryController.getRecord
+);
 
 //===================       Setting Route       ==============//
 router.put(
@@ -23,9 +92,8 @@ router.put(
 router.get("/getSetting", authenticate, isAdmin, settingController.getRecord);
 
 //===================       Auth Route       ==============//
-router.post("/signUp", authValidator.signUp, authController.signUp);
-router.post("/signIn", authValidator.signInAdmin, authController.signInAdmin); //==== use For admin login through email
-router.post("/login", authValidator.logIn, authController.signIn); //==== use for user login through phone number
+router.post("/signUp", authController.signUp);
+router.post("/login", authValidator.logIn, authController.signIn);
 
 router.post("/resetForgetPassword", authController.resetPassword);
 
@@ -102,38 +170,34 @@ router.put("/addFavourite", authenticate, authController.addFavourite);
 router.put("/removeFavourite", authenticate, authController.removeFavourite);
 router.get("/getFavourite", authenticate, authController.getFavourite);
 //===================       category Route       ==============//
-router.post(
-  "/addCategory",
-  categoryValidator.addCategory,
-  authenticate,
-  categoryController.addCategory
-);
-router.get("/getCategory/:query", categoryController.getCategory);
+
 router.put(
-  "/editCategory",
+  "/edit-sellerCategory",
   categoryValidator.editCategory,
   authenticate,
-  categoryController.editCategory
+  retailCategoryController.editCategory
 );
 router.delete(
-  "/deleteCategory",
+  "/delete-sellerCategory",
   authenticate,
-  categoryController.deleteCategory
+  retailCategoryController.deleteCategory
 );
 
-router.get("/getCategoryById/:query", categoryController.getCategoryById);
+router.get("/getCategoryById/:query", retailCategoryController.getCategoryById);
 
-router.post("/addSubCategory", authenticate, subCategoryController.addRecord);
-router.get("/getSubCategory/:query", subCategoryController.getRecord);
 router.get(
   "/getSubCategoryByCategory/:query",
-  subCategoryController.getSubCategoryByCategory
+  retailSubCategoryController.getSubCategoryByCategory
 );
-router.put("/editSubCategory", authenticate, subCategoryController.editRecord);
+router.put(
+  "/editSubCategory",
+  authenticate,
+  retailSubCategoryController.editRecord
+);
 router.delete(
   "/deleteSubCategory",
   authenticate,
-  subCategoryController.deleteRecord
+  retailSubCategoryController.deleteRecord
 );
 
 //===================       Favorite Auction Route       ==============//

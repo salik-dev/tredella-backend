@@ -3,14 +3,14 @@ const constant = require("../utils/constant"),
 const catchAsync = require("../utils/catchAsync");
 const { incrementField } = require("../utils/commonFunctions");
 const { default: mongoose } = require("mongoose");
-const TableName = "SubCategory";
+const TableName = "RetailSubCategory";
 
 const fetchSubCategoryList = async (condition) => {
   const aggregateArray = [
     { $match: condition },
     {
       $lookup: {
-        from: "categories",
+        from: "retailcategories",
         let: { categoryId: "$parentId" },
         pipeline: [
           { $match: { $expr: { $eq: ["$_id", "$$categoryId"] } } },
@@ -34,7 +34,7 @@ const fetchSubCategoryList = async (condition) => {
             $project: {
               _id: 1,
               name: 1,
-              formStructure:1,
+              formStructure: 1,
             },
           },
         ],
@@ -44,14 +44,13 @@ const fetchSubCategoryList = async (condition) => {
     {
       $project: {
         _id: 1,
-        categoryId: 1,
-        parentId:1,
-        templateId:1,
+        subCategoryId: 1,
+        parentId: 1,
         categoryName: { $arrayElemAt: ["$categoryDetail.name", 0] },
-        templateName: { $arrayElemAt: ["$formtemplate.name", 0] },
-        formStructure: { $arrayElemAt: ["$formtemplate.formStructure", 0] },
         name: "$name",
-        imageUrl: 1,
+        childCategories: 1,
+        brands: 1,
+        percentage: 1,
         createdAt: 1,
       },
     },
@@ -92,7 +91,7 @@ const getRecord = catchAsync(async (req, res) => {
 });
 const getSubCategoryByCategory = catchAsync(async (req, res) => {
   const data = JSON.parse(req.params.query);
-  let condition = {parentId: new mongoose.Types.ObjectId(data.parentId)};
+  let condition = { parentId: new mongoose.Types.ObjectId(data.parentId) };
   const Record = await fetchSubCategoryList(condition);
 
   res.send({
@@ -106,9 +105,30 @@ const addRecord = catchAsync(async (req, res) => {
   const data = req.body;
   const user = req.user;
 
+  if (data.brands && data.brands.length > 0) {
+    data.brands = data.brands.map((item) => ({
+      ...item,
+      _id: mongoose.Types.ObjectId(),
+    }));
+  } else {
+    data.brands = [];
+  }
+  if (data.childCategories && data.childCategories.length > 0) {
+    data.childCategories = data.childCategories.map((item) => ({
+      ...item,
+      _id: mongoose.Types.ObjectId(),
+    }));
+  } else {
+    data.childCategories = [];
+  }
   data.createdBy = user._id;
-  const categoryId = await incrementField(TableName, "categoryId", {});
-  data.categoryId = categoryId;
+  const subCategoryId = await incrementField(
+    TableName,
+    "subCategoryId",
+    "rsc",
+    {}
+  );
+  data.subCategoryId = subCategoryId;
 
   const Record = await generalService.addRecord(TableName, data);
   const RecordObj = await fetchSubCategoryList({ _id: Record._id });
@@ -122,9 +142,13 @@ const addRecord = catchAsync(async (req, res) => {
 const editRecord = catchAsync(async (req, res) => {
   const data = req.body;
 
-  const Record = await generalService.findAndModifyRecord(TableName, { _id: data._id }, data);
+  const Record = await generalService.findAndModifyRecord(
+    TableName,
+    { _id: data._id },
+    data
+  );
   const RecordObj = await fetchSubCategoryList({ _id: Record._id });
- 
+
   res.send({
     status: constant.SUCCESS,
     message: "update Record Successfully",
@@ -150,5 +174,5 @@ module.exports = {
   addRecord,
   editRecord,
   deleteRecord,
-  getSubCategoryByCategory
+  getSubCategoryByCategory,
 };

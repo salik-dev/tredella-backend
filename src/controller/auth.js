@@ -15,15 +15,10 @@ let userFieldSendFrontEnd = [
   "_id",
   "email",
   "userId",
-  "firstName",
-  "lastName",
+  "fullName",
   "phoneNumber",
   "role",
   "status",
-  "userType",
-  "companyName",
-  "companyNumber",
-  "accountNumber",
   "address",
   "postalCode",
   "place",
@@ -32,12 +27,8 @@ let userFieldSendFrontEnd = [
   "token",
   "profileCompleted",
   "profileImageUrl",
-  "newsLetter",
-  "termsAndCondition",
-  "address2",
-  "turnOffEmail",
   "favourites",
-  "defaultFee",
+  
 ];
 
 const getUserRecord = async (condition) => {
@@ -158,8 +149,7 @@ const signUp = catchAsync(async (req, res) => {
 
 const signIn = catchAsync(async (req, res, next) => {
   const data = req.body;
-
-  passport.authenticate("local-user", {}, (err, user, info) => {
+  passport.authenticate("local", {}, (err, user, info) => {
     if (err || !user) {
       res.status(400).send({
         status: constant.ERROR,
@@ -179,53 +169,6 @@ const signIn = catchAsync(async (req, res, next) => {
       if (user.status === "active") {
         let data = _.pick(user, [...userFieldSendFrontEnd, "token"]);
         res.append("x-auth", data.token);
-        res.append("Access-Control-Expose-Headers", "x-auth");
-
-        res.status(200).send({
-          status: constant.SUCCESS,
-          message: constant.USER_LOGIN_SUCCESS,
-          user: data,
-        });
-      } else {
-        res.status(400).send({
-          status: constant.ERROR,
-          message: "your account is not active. kindly contact with admin",
-        });
-        return;
-      }
-    });
-  })(req, res, next);
-});
-
-const signInAdmin = catchAsync(async (req, res, next) => {
-  const data = req.body;
-  //==== add dummy password as local Strategy need two field username, password to verify
-  // req.body["password"] = "nopass";
-
-  passport.authenticate("local", {}, (err, user, info) => {
-    console.log("======= info =====", info, err);
-    if (err || !user) {
-      res.status(400).send({
-        status: constant.ERROR,
-        message: constant.PHONE_NUMBER_PASSWORD_ERROR,
-      });
-      return;
-    }
-    req.logIn(user, async (err) => {
-      if (err) {
-        res.status(400).send({
-          status: constant.ERROR,
-          message: err.message,
-        });
-        return;
-      }
-
-      if (user.status === "active") {
-        let token = await user.generateAuthToken();
-        let data = _.pick(user, userFieldSendFrontEnd);
-        data.token = token;
-
-        res.append("x-auth", token);
         res.append("Access-Control-Expose-Headers", "x-auth");
 
         res.status(200).send({
@@ -739,7 +682,6 @@ module.exports = {
   signUp,
   addUser,
   signIn,
-  signInAdmin,
   editUser,
   updateStatus,
   updateProfile,

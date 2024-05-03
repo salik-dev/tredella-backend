@@ -42,21 +42,17 @@ const addUser = async (req, res, next) => {
     );
 
     if (isValidationError) {
-      res
-        .status(400)
-        .send({
-          status: "ERROR",
-          message: "Validation error - required fields missing",
-        });
+      res.status(400).send({
+        status: "ERROR",
+        message: "Validation error - required fields missing",
+      });
       return;
     } else {
-      res
-        .status(400)
-        .send({
-          status: "ERROR",
-          message: "Validation error - invalid data",
-          details: error.details,
-        });
+      res.status(400).send({
+        status: "ERROR",
+        message: "Validation error - invalid data",
+        details: error.details,
+      });
       return;
     }
   }
@@ -81,21 +77,17 @@ const editUser = async (req, res, next) => {
     );
 
     if (isValidationError) {
-      res
-        .status(400)
-        .send({
-          status: "ERROR",
-          message: "Validation error - required fields missing",
-        });
+      res.status(400).send({
+        status: "ERROR",
+        message: "Validation error - required fields missing",
+      });
       return;
     } else {
-      res
-        .status(400)
-        .send({
-          status: "ERROR",
-          message: "Validation error - invalid data",
-          details: error.details,
-        });
+      res.status(400).send({
+        status: "ERROR",
+        message: "Validation error - invalid data",
+        details: error.details,
+      });
       return;
     }
   }
@@ -138,9 +130,8 @@ const resetPassword = async (req, res, next) => {
 
 const logIn = async (req, res, next) => {
   const data = req.body;
-
   const Schema = joi.object().keys({
-    phoneNumber: joi.string().regex(e164Pattern).required(),
+    email: joi.string().regex(emailRegex).required(),
     password: joi.string().required(),
   });
 

@@ -1,10 +1,10 @@
 "use strict";
 const mongoose = require("mongoose");
 
-const Category = new mongoose.Schema(
+const WholeSellerSubCategory = new mongoose.Schema(
   {
-    categoryId: {
-      type: Number,
+    subCategoryId: {
+      type: String,
     },
     name: {
       type: String,
@@ -13,8 +13,9 @@ const Category = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
-    categoryImage:{
-      type: String,
+    parentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -37,4 +38,4 @@ const Category = new mongoose.Schema(
   }
 );
 
-mongoose.model("Category", Category);
+mongoose.model("WholeSellerSubCategory", WholeSellerSubCategory);

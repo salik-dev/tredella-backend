@@ -7,16 +7,10 @@ const secretKey = process.env.SECRET_KEY;
 const User = new mongoose.Schema(
   {
     userId: {
-      type: Number,
-      default: 0,
-    },
-
-    firstName: {
       type: String,
-      lowercase: true,
     },
 
-    lastName: {
+    fullName: {
       type: String,
       lowercase: true,
     },
@@ -27,54 +21,11 @@ const User = new mongoose.Schema(
       lowercase: true,
     },
 
-    verifyPhoneNumber: {
-      type: Boolean,
-      default: false,
-    },
-
-    phoneNumber: {
-      type: String,
-      unique: true,
-      required: "phoneNumber is required",
-    },
-
-    otpCode: {
-      type: String,
-    },
-    verifyOtp: {
-      type: Boolean,
-      default: false,
-    },
-
-    optCodeSend: {
-      type: Number,
-      default: 0,
-    },
-
-    businessCustomer: {
-      type: Boolean,
-      default: false,
-    },
-    companyName: {
-      type: String,
-    },
-
-    companyNumber: {
-      type: String,
-    },
-
     address: {
       type: String,
     },
 
-    address2: {
-      type: String,
-    },
-
     postalCode: {
-      type: Number,
-    },
-    accountNumber: {
       type: Number,
     },
 
@@ -86,19 +37,9 @@ const User = new mongoose.Schema(
       type: String,
     },
 
-    newsLetter: {
-      type: Boolean,
-      default: false,
-    },
-
-    termsAndCondition: {
-      type: Boolean,
-      default: false,
-    },
-
     plateForm: {
       type: String,
-      enum: ["app", "google"],
+      enum: ["app", "google", "website", "portal"],
       default: "app",
     },
 
@@ -112,33 +53,16 @@ const User = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["unVerified", "active", "block"],
-      default: "unVerified",
+      enum: ["active", "block"],
+      default: "active",
     },
 
     role: {
       type: String,
-      enum: ["user", "superAdmin"],
+      enum: ["user", "retail", "wholeSeller", "superAdmin", "admin"],
       default: "user",
     },
-    administrationFee: {
-      type: Array,
-    },
-    vatFee: {
-      type: Array,
-    },
-    customFee: {
-      type: Boolean,
-      default: false,
-    },
-    turnOffEmail: {
-      type: Boolean,
-      default: false,
-    },
-    profileCompleted: {
-      type: Boolean,
-      default: false,
-    },
+
     token: {
       type: String,
     },
@@ -146,14 +70,7 @@ const User = new mongoose.Schema(
       type: String,
     },
 
-    acceptedAt: {
-      type: Date,
-    },
     createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    lastApiRequest: {
       type: Date,
       default: Date.now,
     },
@@ -187,7 +104,7 @@ User.methods.generateAuthToken = async function (extra = "") {
       {
         _id: user._id.toHexString(),
         access,
-        phoneNumber: user.phoneNumber,
+        email: user.email,
       },
       secretKey,
       {
@@ -202,38 +119,15 @@ User.methods.generateAuthToken = async function (extra = "") {
     return token;
   });
 };
-User.methods.generateAuthTokenWithOtp = async function (otp = "") {
-  let user = this;
-  let access = "auth";
 
-  let token = jwt
-    .sign(
-      {
-        _id: user._id.toHexString(),
-        access,
-        phoneNumber: user.phoneNumber,
-      },
-      secretKey,
-      {
-        expiresIn: "1d",
-      }
-    )
-    .toString();
-  if (otp !== "") {
-    user.otpCode = otp;
-  }
-  user.token = token;
-  user.lastLogin = new Date();
-  user.lastApiRequest = new Date();
-  return user.save().then(() => {
-    return token;
-  });
-};
 
 User.statics.updateLastRequest = async function (_id) {
   let User = this;
   let lastApiRequest = new Date();
-  let doc = await User.findOneAndUpdate({ _id: _id }, { lastApiRequest: lastApiRequest });
+  let doc = await User.findOneAndUpdate(
+    { _id: _id },
+    { lastApiRequest: lastApiRequest }
+  );
   return doc;
 };
 

@@ -28,7 +28,6 @@ let userFieldSendFrontEnd = [
   "profileCompleted",
   "profileImageUrl",
   "favourites",
-  
 ];
 
 const getUserRecord = async (condition) => {
@@ -111,40 +110,18 @@ const signUp = catchAsync(async (req, res) => {
   const userId = await incrementField("User", "userId", {});
   data.userId = userId;
 
-  let check = await generalService.getRecord(TableName, {
-    phoneNumber: data.phoneNumber,
+
+
+  user = await generalService.addRecord(TableName, data);
+
+  let token = await user.generateAuthToken();
+  user.token = token;
+
+  res.send({
+    status: constant.SUCCESS,
+    message: constant.USER_REGISTER_SUCCESS,
+    user: _.pick(user, ["_id", "token", "verifyOtp", "otpCode"]),
   });
-  console.log(check);
-  if (check.length > 0 && check[0].verifyPhoneNumber == false) {
-    // user = await generalService.addRecord(TableName, data);
-    user = await generalService.updateRecord(
-      TableName,
-      { _id: check[0]._id },
-      data
-    );
-    // user = check[0]
-    let token = await user.generateAuthToken();
-    user.token = token;
-
-    //====== send otp code on mobile phone number here
-
-    res.send({
-      status: constant.SUCCESS,
-      message: constant.USER_REGISTER_SUCCESS,
-      user: _.pick(user, ["_id", "token", "verifyOtp", "otpCode"]),
-    });
-  } else {
-    user = await generalService.addRecord(TableName, data);
-
-    let token = await user.generateAuthToken();
-    user.token = token;
-
-    res.send({
-      status: constant.SUCCESS,
-      message: constant.USER_REGISTER_SUCCESS,
-      user: _.pick(user, ["_id", "token", "verifyOtp", "otpCode"]),
-    });
-  }
 });
 
 const signIn = catchAsync(async (req, res, next) => {

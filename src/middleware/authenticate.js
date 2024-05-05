@@ -16,13 +16,9 @@ const authenticate = (req, res, next) => {
         "_id",
         "email",
         "fullName",
-        "firstName",
-        "lastName",
         "phoneNumber",
         "role",
         "token",
-        "optCodeSend",
-        "lastApiRequest",
         "favourites",
       ]);
 
@@ -45,7 +41,11 @@ const isAdmin = (req, res, next) => {
     const userLastApiRequest = new Date(user.lastApiRequest);
     const diffMilliseconds = currentDate - userLastApiRequest;
     const diffMinutes = diffMilliseconds / (1000 * 60);
-    console.log("===== lastApiRequest =====", diffMilliseconds / (1000 * 60), diffMinutes < 30);
+    console.log(
+      "===== lastApiRequest =====",
+      diffMilliseconds / (1000 * 60),
+      diffMinutes < 30
+    );
 
     if (user.role === "superAdmin") {
       if (diffMinutes < 30) {

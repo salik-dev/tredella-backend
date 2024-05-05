@@ -107,9 +107,6 @@ User.methods.generateAuthToken = async function (extra = "") {
         email: user.email,
       },
       secretKey,
-      {
-        expiresIn: "1d",
-      }
     )
     .toString();
   user.token = token;

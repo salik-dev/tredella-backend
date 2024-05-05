@@ -8,7 +8,7 @@ const signInAdmin = async (req, res, next) => {
   const data = req.body;
 
   const Schema = joi.object().keys({
-    phoneNumber: joi.string().regex(e164Pattern).required(),
+    email: joi.string().regex(emailRegex).required(),
     password: joi.string().required(),
   });
 
@@ -147,7 +147,7 @@ const signUp = async (req, res, next) => {
   const data = req.body;
 
   const Schema = joi.object({
-    phoneNumber: joi.string().regex(e164Pattern).required(),
+    email: joi.string().regex(emailRegex).required(),
     password: joi.string().required(),
   });
   const { error } = Schema.validate(data, { allowUnknown: true });

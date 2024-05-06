@@ -12,6 +12,7 @@ const retailerStoreController = require("./controller/retailerStore");
 const wholeSellerStoreController = require("./controller/wholeSellerStore");
 const packagesController = require("./controller/packages");
 const deliveryServiceController = require("./controller/deliveryServices");
+const retailerProductController = require("./controller/retailProduct");
 
 const favoriteController = require("./controller/favorite");
 const settingController = require("./controller/setting");
@@ -154,6 +155,19 @@ router.put(
   authenticate,
   wholeSellerStoreController.editRecord
 );
+//=================== Retail Product ==============//
+
+router.post(
+  "/add-retailerProduct",
+  authenticate,
+  retailerProductController.addRecord
+);
+router.get(
+  "/get-retailerProduct/:query",
+  authenticate,
+  retailerProductController.getRecord
+);
+
 //===================       Setting Route       ==============//
 // router.put(
 //   "/updateSetting",

@@ -7,7 +7,8 @@
     "url": "git+ssh://git@bitbucket.org/digitalsensei/auctionbackend.git"
   },
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "start": "index.js"
   },
   "author": "",
   "license": "MIT",

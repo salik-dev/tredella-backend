@@ -2,7 +2,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "https://tredella-backend-j3t1ljcmj-ammadarshad-devs-projects.vercel.app/",
+      "dest": "https://tredella-backend.vercel.app/",
       "headers": {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",

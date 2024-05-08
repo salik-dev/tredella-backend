@@ -7,7 +7,6 @@ const constant = require("../utils/constant"),
 const guid = require("guid");
 const { incrementField } = require("../utils/commonFunctions");
 const countriesList = require("../utils/countriesList");
-
 const saltRounds = 10;
 const TableName = "User";
 
@@ -29,7 +28,6 @@ let userFieldSendFrontEnd = [
   "profileImageUrl",
   "favourites",
 ];
-
 const getUserRecord = async (condition) => {
   let aggregateArr = [
     {
@@ -81,7 +79,6 @@ const getUserRecord = async (condition) => {
   let Record = await generalService.getRecordAggregate(TableName, aggregateArr);
   return Record;
 };
-
 const checkUser = catchAsync(async (req, res) => {
   const data = JSON.parse(req.params.query);
   console.log(data);
@@ -103,27 +100,31 @@ const checkUser = catchAsync(async (req, res) => {
     Record: arr,
   });
 });
-
 const signUp = catchAsync(async (req, res) => {
   const data = req.body;
   let user = null;
-  const userId = await incrementField("User", "userId", {});
+  const serialNumber = data.role === "retailer" ? "ri" : "wsi";
+  const userId = await incrementField("User", "userId", serialNumber);
   data.userId = userId;
-
-
-
   user = await generalService.addRecord(TableName, data);
-
   let token = await user.generateAuthToken();
   user.token = token;
-
   res.send({
     status: constant.SUCCESS,
     message: constant.USER_REGISTER_SUCCESS,
-    user: _.pick(user, ["_id", "token", "verifyOtp", "otpCode"]),
+    user: _.pick(user, [
+      "_id",
+      "fullName",
+      "email",
+      "phoneNumber",
+      "role",
+      "status",
+      "duration",
+      "token",
+      "createdAt",
+    ]),
   });
 });
-
 const signIn = catchAsync(async (req, res, next) => {
   const data = req.body;
   passport.authenticate("local", {}, (err, user, info) => {
@@ -163,7 +164,6 @@ const signIn = catchAsync(async (req, res, next) => {
     });
   })(req, res, next);
 });
-
 const updateProfile = catchAsync(async (req, res, next) => {
   const data = req.body;
   const user = req.user;
@@ -181,7 +181,6 @@ const updateProfile = catchAsync(async (req, res, next) => {
     Record: userRecord,
   });
 });
-
 const resetPassword = catchAsync(async (req, res) => {
   let data = req.body;
   console.log(data);
@@ -228,7 +227,6 @@ const resetPassword = catchAsync(async (req, res) => {
     });
   }
 });
-
 const forgetPassword = catchAsync(async (req, res) => {
   const email = req.body.email.toLowerCase();
   const authToken = guid.create().value;
@@ -288,7 +286,6 @@ const forgetPassword = catchAsync(async (req, res) => {
     });
   }
 });
-
 const changePassword = catchAsync(async (req, res) => {
   const user = req.user;
   let obj = req.body;
@@ -334,7 +331,6 @@ const changePassword = catchAsync(async (req, res) => {
       });
     });
 });
-
 const setNewPassword = catchAsync(async (req, res) => {
   const forgetPassAuthToken = req.body.forgetPasswordAuthToken;
   const password = req.body.password;
@@ -380,10 +376,10 @@ const setNewPassword = catchAsync(async (req, res) => {
     });
   }
 });
-
 const addUser = catchAsync(async (req, res) => {
   const data = req.body;
   data.status = "active";
+
   const userId = await incrementField("User", "userId", { role: "user" }, 9000);
   data.userId = userId;
   if (data.termsAndCondition) {
@@ -410,7 +406,48 @@ const addUser = catchAsync(async (req, res) => {
     ]),
   });
 });
+const addRetailerUser = catchAsync(async (req, res) => {
+  const data = req.body;
+  data.status = "active";
+  data.role = "retailer";
+  const userId = await incrementField("User", "userId", "ri");
+  data.userId = userId;
+  let Record = await generalService.addRecord(TableName, data);
 
+  res.send({
+    status: constant.SUCCESS,
+    message: constant.USER_REGISTER_SUCCESS,
+    Record: _.pick(Record, [
+      "_id",
+      "fullName",
+      "userId",
+      "email",
+      "phoneNumber",
+      "createdAt",
+    ]),
+  });
+});
+const addWholeSellerUser = catchAsync(async (req, res) => {
+  const data = req.body;
+  data.status = "active";
+  data.role = "wholeSeller";
+  const userId = await incrementField("User", "userId", "wsi");
+  data.userId = userId;
+  let Record = await generalService.addRecord(TableName, data);
+
+  res.send({
+    status: constant.SUCCESS,
+    message: constant.USER_REGISTER_SUCCESS,
+    Record: _.pick(Record, [
+      "_id",
+      "fullName",
+      "userId",
+      "email",
+      "phoneNumber",
+      "createdAt",
+    ]),
+  });
+});
 const editUser = catchAsync(async (req, res, next) => {
   const data = req.body;
 
@@ -428,7 +465,6 @@ const editUser = catchAsync(async (req, res, next) => {
     Record: userRecord[0],
   });
 });
-
 const updateStatus = catchAsync(async (req, res, next) => {
   const data = req.body;
 
@@ -455,7 +491,6 @@ const updateStatus = catchAsync(async (req, res, next) => {
     ]),
   });
 });
-
 const getProfile = catchAsync(async (req, res) => {
   const user = req.user;
 
@@ -498,7 +533,6 @@ const getProfile = catchAsync(async (req, res) => {
     Record: Record[0],
   });
 });
-
 const getUsers = catchAsync(async (req, res) => {
   const data = JSON.parse(req.params.query);
   console.log("data", data);
@@ -552,7 +586,6 @@ const getUsers = catchAsync(async (req, res) => {
     Record,
   });
 });
-
 const getCountriesList = catchAsync(async (req, res) => {
   const countries = countriesList;
   res.send({
@@ -561,7 +594,6 @@ const getCountriesList = catchAsync(async (req, res) => {
     countries,
   });
 });
-
 const getUsersDropDown = catchAsync(async (req, res) => {
   let condition = "";
 
@@ -591,7 +623,6 @@ const getUsersDropDown = catchAsync(async (req, res) => {
     Record,
   });
 });
-
 const deleteRecord = catchAsync(async (req, res) => {
   const data = req.body;
 
@@ -605,7 +636,6 @@ const deleteRecord = catchAsync(async (req, res) => {
     Record: { _id: data._id },
   });
 });
-
 const addFavourite = catchAsync(async (req, res) => {
   const data = req.body;
   const user = req.user;
@@ -622,7 +652,6 @@ const addFavourite = catchAsync(async (req, res) => {
     Record,
   });
 });
-
 const removeFavourite = catchAsync(async (req, res) => {
   const data = req.body;
   const user = req.user;
@@ -640,7 +669,6 @@ const removeFavourite = catchAsync(async (req, res) => {
     Record: userRecord,
   });
 });
-
 const getFavourite = catchAsync(async (req, res) => {
   const user = req.user;
   //console.log("==user==",user)
@@ -675,4 +703,6 @@ module.exports = {
   removeFavourite,
   getFavourite,
   checkUser,
+  addRetailerUser,
+  addWholeSellerUser,
 };

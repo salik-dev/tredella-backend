@@ -14,6 +14,16 @@ const getRecord = catchAsync(async (req, res) => {
     Record,
   });
 });
+const getStoreByUser = catchAsync(async (req, res) => {
+  const user = req.user;
+  let condition = { createdBy: user._id };
+  const Record = await generalService.getRecord(TableName, condition);
+  res.send({
+    status: constant.SUCCESS,
+    message: "Activity fetch Successfully",
+    Record,
+  });
+});
 const addRecord = catchAsync(async (req, res) => {
   const data = req.body;
   const user = req.user;
@@ -60,4 +70,5 @@ module.exports = {
   addRecord,
   editRecord,
   deleteRecord,
+  getStoreByUser,
 };

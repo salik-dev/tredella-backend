@@ -9,76 +9,76 @@ const User = new mongoose.Schema(
     userId: {
       type: String,
     },
-
     fullName: {
       type: String,
       lowercase: true,
     },
-
     email: {
       type: String,
       trim: true,
+      required: true,
+      unique: true,
       lowercase: true,
     },
-
+    phoneNumber: {
+      type: String,
+      trim: true,
+      required: true,
+      unique: true,
+      lowercase: true,
+    },
     address: {
       type: String,
     },
-
     postalCode: {
       type: Number,
     },
-
     place: {
       type: String,
     },
-
     country: {
       type: String,
     },
-
     plateForm: {
       type: String,
       enum: ["app", "google", "website", "portal"],
-      default: "app",
+      default: "portal",
     },
-
     forgetPasswordAuthToken: {
       type: String,
     },
-
     password: {
       type: String,
     },
-
     status: {
       type: String,
       enum: ["active", "block"],
       default: "active",
     },
-
     role: {
       type: String,
-      enum: ["user", "retail", "wholeSeller", "superAdmin", "admin"],
+      enum: ["user", "retailer", "wholeSeller", "superAdmin", "admin"],
       default: "user",
     },
-
     token: {
       type: String,
     },
     profileImageUrl: {
       type: String,
     },
-
     createdAt: {
       type: Date,
       default: Date.now,
     },
-
     lastLogin: {
       type: Date,
     },
-
+    packageId: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    duration: {
+      type: String,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -86,7 +86,6 @@ const User = new mongoose.Schema(
     favourites: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Auction",
       },
     ],
   },
@@ -106,7 +105,7 @@ User.methods.generateAuthToken = async function (extra = "") {
         access,
         email: user.email,
       },
-      secretKey,
+      secretKey
     )
     .toString();
   user.token = token;
@@ -116,7 +115,6 @@ User.methods.generateAuthToken = async function (extra = "") {
     return token;
   });
 };
-
 
 User.statics.updateLastRequest = async function (_id) {
   let User = this;

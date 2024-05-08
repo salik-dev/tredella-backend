@@ -8,9 +8,9 @@ const RetailerStore = new mongoose.Schema(
     },
     name: {
       type: String,
-      trim: false,
-      required: false,
-      unique: false,
+      trim: true,
+      required: true,
+      unique: true,
       lowercase: true,
     },
     description: {

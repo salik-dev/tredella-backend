@@ -8,9 +8,9 @@ const DeliveryService = new mongoose.Schema(
     },
     deliveryServicesName: {
       type: String,
-      trim: false,
-      required: false,
-      unique: false,
+      trim: true,
+      required: true,
+      unique: true,
       lowercase: true,
     },
     deliveryServicesLink: {

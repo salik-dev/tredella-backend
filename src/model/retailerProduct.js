@@ -6,6 +6,9 @@ const RetailerProducts = new mongoose.Schema(
     productId: {
       type: String,
     },
+    productImages: {
+      type: Array,
+    },
     title: {
       type: String,
     },
@@ -13,25 +16,25 @@ const RetailerProducts = new mongoose.Schema(
       type: String,
     },
     storeId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
     },
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
     },
     subCategory: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
     },
     childCategory: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
     },
     brand: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
     },
     quantity: {
       type: Number,
     },
     deliveryService: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
     },
     deliveryWeight: {
       type: String,

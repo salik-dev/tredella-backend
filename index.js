@@ -18,8 +18,12 @@ require("./src/utils/passport");
 
 const app = express();
 const server = http.createServer(app);
-
-app.use(cors());
+const corsConfig = {
+  origin: "*",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+};
+app.use(cors(corsConfig));
 app.use(passport.initialize());
 app.use(
   session({

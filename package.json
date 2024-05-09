@@ -2,13 +2,9 @@
   "name": "auctionbackend",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@bitbucket.org/digitalsensei/auctionbackend.git"
-  },
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "index.js"
+    "start": "node index.js"
   },
   "author": "",
   "license": "MIT",

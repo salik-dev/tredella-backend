@@ -6,7 +6,7 @@ const router = require("./src/router");
 const passport = require("passport");
 const session = require("express-session");
 const express = require("express");
-const cors = require("cors");
+// const cors = require("cors");
 const cron = require("node-cron");
 const errorController = require("./src/utils/errorController");
 const AppError = require("./src/utils/appError");
@@ -18,12 +18,12 @@ require("./src/utils/passport");
 
 const app = express();
 const server = http.createServer(app);
-const corsConfig = {
-  origin: "*",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-};
-app.use(cors(corsConfig));
+// const corsConfig = {
+//   origin: "*",
+//   credentials: true,
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+// };
+// app.use(cors(corsConfig));
 app.use(passport.initialize());
 app.use(
   session({

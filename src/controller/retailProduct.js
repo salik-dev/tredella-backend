@@ -246,6 +246,7 @@ const testSalik = catchAsync(async (req, res) => {
   res.send({
     status: constant.SUCCESS,
     message: "salik api testing done...",
+    data: {username: "salik-dev", password:"welcome-salik"}
     // Record: { _id: data._id },
   });
 });

@@ -240,6 +240,13 @@ const deleteRecord = catchAsync(async (req, res) => {
     Record: { _id: data._id },
   });
 });
+const testSalik = catchAsync(async (req, res) => {
+  res.send({
+    status: constant.SUCCESS,
+    message: "salik api testing done...",
+    // Record: { _id: data._id },
+  });
+});
 
 module.exports = {
   getRecord,
@@ -247,4 +254,5 @@ module.exports = {
   editRecord,
   deleteRecord,
   getProductByUser,
+  testSalik,
 };

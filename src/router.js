@@ -198,7 +198,7 @@ router.post(
 router.put(
   "/edit-retailerProduct",
   authenticate,
-  retailerProductController.editRecord
+  // retailerStoreController.testsa
 );
 router.get(
   "/get-retailerProduct/:query",
@@ -364,4 +364,7 @@ router.post("/uploadImage", uploadS3.single("file"), (req, res, next) => {
     });
   }
 });
+
+// testing api
+router.get("/test-salik", retailerProductController.testSalik);
 module.exports = router;

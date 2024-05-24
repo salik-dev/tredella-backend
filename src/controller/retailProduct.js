@@ -240,6 +240,8 @@ const deleteRecord = catchAsync(async (req, res) => {
     Record: { _id: data._id },
   });
 });
+
+// Just testing controller
 const testSalik = catchAsync(async (req, res) => {
   res.send({
     status: constant.SUCCESS,

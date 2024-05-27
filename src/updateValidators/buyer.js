@@ -94,6 +94,7 @@ const editUser = async (req, res, next) => {
   next();
 };
 
+
 const updateStatus = async (req, res, next) => {
   const data = req.body;
 
@@ -147,13 +148,20 @@ const signUp = async (req, res, next) => {
   const data = req.body;
 
   const Schema = joi.object({
-    email: joi.string().regex(emailRegex).required(),
-    password: joi.string().required(),
+    // userId: joi.string().required(), // Need to confirmation
+    fullName: joi.string().trim().lowercase().required(),
+    userName: joi.string().trim().lowercase().required(),
+    email: joi.string().email().trim().lowercase().required(),
+    phoneNumber: joi.string().trim().lowercase().required(),
+    password: joi.string().trim().required(),
+    plateForm: joi.string().valid('app', 'google', 'website', 'portal').default('portal'),
+    status: joi.string().valid('pending', 'active', 'block').default('pending'),
+    role: joi.string().valid('buyer', 'retailer', 'wholeSeller', 'superAdmin', 'admin').default('buyer'),
   });
+
   const { error } = Schema.validate(data, { allowUnknown: true });
   if (error) {
-    res.status(404).send({ status: ERROR, message: VALIDATION_ERROR_MESSAGE });
-    return;
+    return res.status(404).send({ status: 'ERROR', message: error.details[0].message });
   }
   next();
 };
@@ -220,28 +228,19 @@ const updateProfile = async (req, res, next) => {
   const data = req.body;
 
   // Define a base schema with common validations
-  const baseSchema = {
-    firstName: joi.string().required(),
-    lastName: joi.string().required(),
-    email: joi.string(),
-    userType: joi.string().valid("personal", "business").default("personal"),
-    role: joi.string().valid("user", "superAdmin").default("user"),
-    companyName: joi.string(),
-    companyNumber: joi.string(),
-    address: joi.string(),
-    address2: joi.string().optional(),
-    postalCode: joi.number(),
-    accountNumber: joi.number(),
-    place: joi.string(),
-    country: joi.string(),
-    profileCompleted: joi.boolean(),
-    phoneNumber: joi.number(),
-    newsLetter: joi.boolean(),
-    termsAndCondition: joi.boolean().required(),
-    turnOffEmail: joi.boolean(),
-  };
+  const baseSchema = joi.object({
+    // userId: joi.string().required(), // Need to confirmation
+    fullName: joi.string().trim().lowercase().required(),
+    userName: joi.string().trim().lowercase().required(),
+    email: joi.string().email().trim().lowercase().required(),
+    phoneNumber: joi.string().trim().lowercase().required(),
+    password: joi.string().trim().required(),
+    plateForm: joi.string().valid('app', 'google', 'website', 'portal').default('portal'),
+    status: joi.string().valid('pending', 'active', 'block').default('pending'),
+    role: joi.string().valid('buyer', 'retailer', 'wholeSeller', 'superAdmin', 'admin').default('buyer'),
+  });
   const updateKeys = Object.keys(data).filter((key) => baseSchema[key]);
-
+  
   const dynamicSchema = {};
   updateKeys.forEach((key) => {
     dynamicSchema[key] = baseSchema[key];

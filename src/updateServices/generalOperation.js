@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Buyer = require("../updateModel/buyer");
 
 class generalOperation {
   /** Insert Single Record
@@ -14,6 +15,7 @@ class generalOperation {
   }
 
   static async addRecord(collectionName, reqData) {
+    console.log('c name, req data', collectionName, reqData);
     const Collection = mongoose.model(`${collectionName}`);
     const data = new Collection(reqData);
     return await data.save();
@@ -51,8 +53,8 @@ class generalOperation {
    * @param  {string} TableName - id of dhs form object
    */
 
-  static async getRecord(tableName, condition) {
-    const Table = mongoose.model(`${tableName}`);
+  static async getRecord(collectionName, condition) {
+    const Table = mongoose.model(`${collectionName}`);
     return await Table.find(condition);
   }
 

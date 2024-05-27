@@ -15,7 +15,8 @@ AWS.config.update({
 });
 
 // ===================      All Controllers   ==================//
-const authController = require("./controller/auth");
+// const buyerController = require("./controller/auth");
+const buyerController = require("./updateController/buyer");
 const retailCategoryController = require("./controller/retailCategory");
 const retailSubCategoryController = require("./controller/retailSubCategory");
 const wholeSellerCategoryController = require("./controller/wholeSellerCategory");
@@ -30,22 +31,39 @@ const favoriteController = require("./controller/favorite");
 const settingController = require("./controller/setting");
 
 //==================== Validators =============================
-const authValidator = require("./validation/auth");
+// const authValidator = require("./validation/auth");
+const authValidator = require("./updateValidators/buyer");
 const categoryValidator = require("./validation/category");
 
 //================== AUTH ==========================//
-router.post("/login", authValidator.logIn, authController.signIn);
-router.post("/signUp", authValidator.signUp, authController.signUp);
+router.post("/login", authValidator.logIn, buyerController.signIn);
+// router.post("/signUp", authValidator.signUp, buyerController.signUp);
+router.post("/signUp", authValidator.signUp, buyerController.signUp);
+router.put(
+    "/update-profile/?:id", // When JWT use it will remove
+    // authValidator.updateProfile,
+    // authenticate,
+    buyerController.updateProfile
+  );
+router.delete(
+  "/delete-profile/?:id", // When JWT use it will remove
+  // authValidator.updateProfile,
+  // authenticate,
+  buyerController.deleteRecord
+);
+router.get("/get-profile", 
+// authenticate, 
+buyerController.getProfile);
 
 //================== Add Users ==========================//
-router.post("/add-retailer", authenticate, authController.addRetailerUser);
-// router.get("/get-retailer", authValidator.logIn, authController.signIn);
+router.post("/add-retailer", authenticate, buyerController.addRetailerUser);
+// router.get("/get-retailer", authValidator.logIn, buyerController.signIn);
 router.post(
   "/add-wholeSeller",
   authValidator.logIn,
-  authController.addWholeSellerUser
+  buyerController.addWholeSellerUser
 );
-// router.get("/get-wholeSeller", authValidator.logIn, authController.signIn);
+// router.get("/get-wholeSeller", authValidator.logIn, buyerController.signIn);
 
 //================== Category ==========================//
 router.post(
@@ -221,83 +239,83 @@ router.get(
 // router.get("/getSetting", authenticate, isAdmin, settingController.getRecord);
 
 // //===================       Auth Route       ==============//
-// router.post("/signUp", authController.signUp);
-// router.post("/login", authValidator.logIn, authController.signIn);
+// router.post("/signUp", buyerController.signUp);
+// router.post("/login", authValidator.logIn, buyerController.signIn);
 
-// router.post("/resetForgetPassword", authController.resetPassword);
+// router.post("/resetForgetPassword", buyerController.resetPassword);
 
 // router.put(
 //   "/updateProfile",
 //   authValidator.updateProfile,
 //   authenticate,
-//   authController.updateProfile
+//   buyerController.updateProfile
 // );
-// router.get("/getProfile", authenticate, authController.getProfile);
+// router.get("/getProfile", authenticate, buyerController.getProfile);
 // router.post(
 //   "/forgetPassword",
 //   authValidator.forgetPassword,
-//   authController.forgetPassword
+//   buyerController.forgetPassword
 // );
 // router.post(
 //   "/changePassword",
 //   authValidator.changePassword,
-//   authController.changePassword
+//   buyerController.changePassword
 // );
 // // for admin
 // router.post(
 //   "/changeAdminPassword",
 //   authenticate,
 //   authValidator.changePassword,
-//   authController.changePassword
+//   buyerController.changePassword
 // );
-// router.post("/setNewPassword", authController.setNewPassword);
+// router.post("/setNewPassword", buyerController.setNewPassword);
 
 // //===================       Users Route       ==============//
-// router.get("/getUsers/:query", authenticate, isAdmin, authController.getUsers);
+// router.get("/getUsers/:query", authenticate, isAdmin, buyerController.getUsers);
 // router.post(
 //   "/addUser",
 //   authValidator.addUser,
 //   authenticate,
 //   isAdmin,
-//   authController.addUser
+//   buyerController.addUser
 // );
 // router.put(
 //   "/editUser",
 //   authValidator.editUser,
 //   authenticate,
 //   isAdmin,
-//   authController.editUser
+//   buyerController.editUser
 // );
 // router.put(
 //   "/updateStatus",
 //   authValidator.updateStatus,
 //   authenticate,
 //   isAdmin,
-//   authController.updateStatus
+//   buyerController.updateStatus
 // );
 // router.put(
 //   "/resetPassword",
 //   authValidator.resetPassword,
 //   authenticate,
 //   isAdmin,
-//   authController.resetPassword
+//   buyerController.resetPassword
 // );
-// router.get("/getCountriesList", authController.getCountriesList);
+// router.get("/getCountriesList", buyerController.getCountriesList);
 // router.get(
 //   "/getUsersDropDown",
 //   authenticate,
 //   isAdmin,
-//   authController.getUsersDropDown
+//   buyerController.getUsersDropDown
 // );
 // router.delete(
 //   "/deleteUser",
 //   authenticate,
 //   isAdmin,
-//   authController.deleteRecord
+//   buyerController.deleteRecord
 // );
-// router.put("/addFavourite", authenticate, authController.addFavourite);
-// router.put("/removeFavourite", authenticate, authController.removeFavourite);
-// router.get("/getFavourite", authenticate, authController.getFavourite);
+// router.put("/addFavourite", authenticate, buyerController.addFavourite);
+// router.put("/removeFavourite", authenticate, buyerController.removeFavourite);
+// router.get("/getFavourite", authenticate, buyerController.getFavourite);
 // //===================       category Route       ==============//
 
 // router.put(

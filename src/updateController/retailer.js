@@ -69,7 +69,7 @@ const updateProfile = catchAsync(async (req, res, next) => {
 
 
   // const user = req.user;
-  const {id} = req.params
+  const {id} = req.body;
   const retailerRecord = await findAndModifyRecord(
     modelName,
     { _id: id },
@@ -102,19 +102,19 @@ const getProfile = catchAsync(async (req, res) => {
   //   },
   // ];
   // let Record = await generalService.getRecordAggregate(modelName, aggregateArr);
-  const data = await getRecordAndSort(modelName, condition)
+  const Record = await getRecordAndSort(modelName, condition)
 
   res.send({
     status: constant.SUCCESS,
     message: "Record fetch Successfully",
     // Record: Record[0],
-    data
+    Record
   });
 });
 
 const deleteRecord = catchAsync(async (req, res) => {
   // const data = req.body;
-  const {id} = req.params;
+  const {id} = req.body;
 
   const Record = await removeRecord(modelName, {
     _id: id,
@@ -123,7 +123,7 @@ const deleteRecord = catchAsync(async (req, res) => {
   res.send({
     status: constant.SUCCESS,
     message: constant.DELETE_RECORD,
-    data: { Record },
+    Record,
   });
 });
 

@@ -15,9 +15,14 @@ AWS.config.update({
 });
 
 // ===================      All Controllers   ==================//
-// const buyerController = require("./controller/auth");
+const { signUp, signIn } = require("./updateController/auth");
 const buyerController = require("./updateController/buyer");
-const {addRetailer, updateProfile, getProfile, deleteRecord} = require("./updateController/retailer");
+const {
+  addRetailer,
+  updateProfile,
+  getProfile,
+  deleteRecord,
+} = require("./updateController/retailer");
 const wholeSellerController = require("./updateController/wholeSeller");
 
 //==================== Validators =============================
@@ -25,38 +30,27 @@ const wholeSellerController = require("./updateController/wholeSeller");
 const authValidator = require("./updateValidators/buyer");
 
 //================== signIn/signOut Routing ==========================//
-router.post("/login", authValidator.logIn, buyerController.signIn);
 // router.post("/signUp", authValidator.signUp, buyerController.signUp);
-router.post("/signUp", authValidator.signUp, buyerController.signUp);
+// router.post("/signUp", authValidator.signUp, buyerController.signUp);
+router.post("/signUp", signUp);
+router.post("/login", signIn);
 
 // BUYER ROUTING
-router.put(
-    "/buyer/update-profile/?:id", // When JWT use it will remove
-    // authValidator.updateProfile,
-    // authenticate,
-    buyerController.updateProfile
-  );
-router.delete(
-  "/buyer/delete-profile/?:id", // When JWT use it will remove
-  // authValidator.updateProfile,
-  // authenticate,
-  buyerController.deleteRecord
-);
-router.get("/buyer/get-profile", 
-// authenticate, 
-buyerController.getProfile);
+router.post("/add-buyer", buyerController.signUp);
+router.get("/get-buyer", buyerController.getProfile);
+router.put("/update-buyer", buyerController.updateProfile);
+router.delete("/delete-buyer", buyerController.deleteRecord);
 
 // RETAILER ROUTING
-router.get("/retailer", getProfile);
-router.post("/retailer/add", addRetailer);
-router.put("/retailer/update/?:id", updateProfile); // It remove when jwt active
-router.delete("/retailer/delete/?:id", deleteRecord); 
+router.get("/get-retailer", getProfile);
+router.post("/add-retailer", addRetailer);
+router.put("/update-retailer", updateProfile);
+router.delete("/delete-retailer", deleteRecord);
 
 // WHOLE-SELLER ROUTING
-router.get("/wholeSeller", wholeSellerController.getProfile);
-router.post("/wholeSeller/add", wholeSellerController.addWholeSeller);
-router.put("/wholeSeller/update/?:id", wholeSellerController.updateProfile); // It remove when jwt active
-router.delete("/wholeSeller/delete/?:id", wholeSellerController.deleteRecord); 
+router.post("/add-wholeSeller", wholeSellerController.addWholeSeller);
+router.get("/get-wholeSeller", wholeSellerController.getProfile);
+router.put("/update-wholeSeller", wholeSellerController.updateProfile);
+router.delete("/delete-wholeSeller", wholeSellerController.deleteRecord);
 
-// testing api
 module.exports = router;

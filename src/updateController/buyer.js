@@ -1,15 +1,11 @@
+// JWT Import
+const jwt = require("jsonwebtoken");
+
 const catchAsync = require("../utils/catchAsync");
-// const constant = require("../utils/constant");
 const constant = require("../updateUtils/constant");
-const  generalService = require("../updateServices/generalOperation");
 const { addRecord, getRecordAndSort, findAndModifyRecord, removeRecord } = require("../updateServices/commonOperation");
-const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const  _ = require("lodash");
-const guid = require("guid");
-const { incrementField } = require("../utils/commonFunctions");
-const countriesList = require("../utils/countriesList");
-const saltRounds = 10;
 const modelName = "allUser";
 
 let userFieldSendFrontEnd = [
@@ -35,14 +31,27 @@ const signUp = catchAsync(async (req, res) => {
   const role = "buyer"
   // Need to implement Global Validation Utils ==> pending
   const buyerUser = await addRecord(modelName, {fullName, userName, email, phoneNumber, password, platForm, status, role});
-  buyerUser = await 
+  let token = null;
+  if(buyerUser){
+    token = jwt.sign({id: buyerUser?._id}, process.env.SECRETE_STRING, {
+    expiresIn: process.env.LOGIN_EXPIRES_IN
+    })
+  }
+  else{
+    return res.status(500).json({
+      message: "Something Went Wrong Try Again!",
+      Record: null,
+    })
+  }
 
   res.status(constant.STATUS_OK).json({
     message: constant.USER_REGISTER_SUCCESS,
-    data: buyerUser
+    token,
+    Record: buyerUser
   });
 
 });
+
 const signIn = catchAsync(async (req, res, next) => {
   const data = req.body;
   passport.authenticate("local", {}, (err, user, info) => {
@@ -87,7 +96,7 @@ const updateProfile = catchAsync(async (req, res, next) => {
 
 
   // const user = req.user;
-  const {id} = req.params
+  const {id} = req.body;
   console.log('update data', req.body, req.para)
   const userRecord = await findAndModifyRecord(
     modelName,
@@ -120,14 +129,13 @@ const getProfile = catchAsync(async (req, res) => {
   //   },
   // ];
   // let Record = await generalService.getRecordAggregate(modelName, aggregateArr);
-  const data = await getRecordAndSort(modelName, condition)
-  console.log('recor', data);
+  const Record = await getRecordAndSort(modelName, condition)
 
   res.send({
     status: constant.SUCCESS,
     message: "Record fetch Successfully",
     // Record: Record[0],
-    data
+    Record,
   });
 });
 const deleteRecord = catchAsync(async (req, res) => {

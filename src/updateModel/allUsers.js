@@ -43,6 +43,7 @@ const allUserSchema = new mongoose.Schema(
     password: {
       type: String,
       trim: true,
+      select: false,
       required: [true, "password is required"],
     },
     plateForm: {
@@ -64,10 +65,6 @@ const allUserSchema = new mongoose.Schema(
       type: String,
       length: 6,
     },
-    otpExpiresAt: {
-      type: Date,
-      expires: 120, // TTL in seconds (10 minutes)
-    },
     profileImageUrl: {
       type: String,
       default: null,
@@ -80,10 +77,6 @@ const allUserSchema = new mongoose.Schema(
 
 // Middleware to set OTP and otpExpiresAt before saving the document
 allUserSchema.pre("save", async function (next) {
-  if (this.isModified("otp") || !this.otp) {
-    this.otp = generateRandomOTP();
-    this.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // Current time + 10 minutes
-  }
   if (!this.userId) {
     try {
       let prefix;
@@ -100,14 +93,22 @@ allUserSchema.pre("save", async function (next) {
           break;
       }
       // Find the highest userId with the same prefix
-      const regex = new RegExp(`^${prefix}\\d+$`);
-      const lastUser = await this.constructor.findOne({ userId: regex }).sort({ userId: -1 });
-      if (lastUser && lastUser.userId) {
-        const lastIdNumber = parseInt(lastUser.userId.replace(prefix, ''), 10);
-        this.userId = `${prefix}${lastIdNumber + 1}`;
-      } else {
-        this.userId = `${prefix}1`; // Default to r1, s1, ws-1 if no users found
+      let lastUser;
+      let userIdNumber = 1;
+      let foundUnique = false;
+
+      while (!foundUnique) {
+        const regex = new RegExp(`^${prefix}\\d+$`);
+        lastUser = await this.constructor.findOne({ userId: `${prefix}${userIdNumber}` });
+
+        if (lastUser) {
+          userIdNumber++;
+        } else {
+          this.userId = `${prefix}${userIdNumber}`;
+          foundUnique = true;
+        }
       }
+
       next();
     } catch (err) {
       next(err);
@@ -117,41 +118,13 @@ allUserSchema.pre("save", async function (next) {
   }
 });
 
-// Middleware to remove OTP after 5 seconds
-allUserSchema.post("save", function(doc, next) {
-  if (doc.otp) {
-    setTimeout(async () => {
-      try {
-        await this.constructor.updateOne({ _id: doc._id }, { $unset: { otp: 1 } });
-      } catch (error) {
-        console.error("Error removing OTP:", error);
-      }
-    }, 10 * 60 * 1000); // 10 minutes
+// Middleware to add otp
+allUserSchema.pre("save", function( next) {
+  if (this.isModified("otp") || !this.otp) {
+    this.otp = generateRandomOTP();
   }
   next();
 });
-
-allUserSchema.methods.generateAuthToken = async function (extra = "") {
-  let user = this;
-  let access = "auth";
-
-  let token = jwt
-    .sign(
-      {
-        _id: user._id.toHexString(),
-        access,
-        email: user.email,
-      },
-      secretKey
-    )
-    .toString();
-  user.token = token;
-  user.lastLogin = new Date();
-
-  return user.save().then(() => {
-    return token;
-  });
-};
 
 allUserSchema.statics.updateLastRequest = async function (_id) {
   let buyer = this;
@@ -184,15 +157,9 @@ allUserSchema.pre("save", function save(next) {
 });
 
 //===================== Helper method for validating user's password =================//
-allUserSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
-  try {
-    bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-      cb(err, isMatch);
-    });
-  } catch (error) {
-    console.log("=========== Error in Comparing Password", error);
-  }
-};
+allUserSchema.methods.comparePassword = async function (reqPwd, DBPwd){
+  return await bcrypt.compare(reqPwd, DBPwd);
+}
 
 allUserSchema.statics.findByToken = function (token) {
   let buyer = this;

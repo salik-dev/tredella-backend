@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Buyer = require("../updateModel/buyer");
+const Buyer = require("../updateModel/allUsers");
 
 class generalOperation {
   /** Insert Single Record

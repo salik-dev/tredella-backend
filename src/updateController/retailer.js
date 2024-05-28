@@ -12,34 +12,16 @@ const countriesList = require("../utils/countriesList");
 const saltRounds = 10;
 const modelName = "allUser";
 
-let userFieldSendFrontEnd = [
-  "_id",
-  "email",
-  "userId",
-  "fullName",
-  "phoneNumber",
-  "role",
-  "status",
-  "address",
-  "postalCode",
-  "place",
-  "country",
-  "createdAt",
-  "token",
-  "profileCompleted",
-  "profileImageUrl",
-  "favourites",
-];
-const signUp = catchAsync(async (req, res) => {
+const addRetailer = catchAsync(async (req, res) => {
   const {fullName, userName, email, phoneNumber, password, platForm, status} = req.body;
-  const role = "buyer"
+  const role = "retailer";
   // Need to implement Global Validation Utils ==> pending
-  const buyerUser = await addRecord(modelName, {fullName, userName, email, phoneNumber, password, platForm, status, role});
-  buyerUser = await 
+  const retailerUser = await addRecord(modelName, {fullName, userName, email, phoneNumber, password, platForm, status, role});
+  retailerUser = await 
 
   res.status(constant.STATUS_OK).json({
     message: constant.USER_REGISTER_SUCCESS,
-    data: buyerUser
+    data: retailerUser
   });
 
 });
@@ -88,8 +70,7 @@ const updateProfile = catchAsync(async (req, res, next) => {
 
   // const user = req.user;
   const {id} = req.params
-  console.log('update data', req.body, req.para)
-  const userRecord = await findAndModifyRecord(
+  const retailerRecord = await findAndModifyRecord(
     modelName,
     { _id: id },
     {fullName, userName, email, phoneNumber, password, platForm, status, role}
@@ -98,13 +79,14 @@ const updateProfile = catchAsync(async (req, res, next) => {
   res.status(200).send({
     status: constant.SUCCESS,
     message: constant.PROFILE_UPDATE_SUCCESS,
-    Record: userRecord,
+    Record: retailerRecord,
   });
 });
+
 const getProfile = catchAsync(async (req, res) => {
   // const user = req.user; // use when JWT auth active
   // const {id} = req.params;
-  const condition = {role: "buyer"};
+ const condition = {role: "retailer"}
 
   // let aggregateArr = [
   //   { $match: { _id: id } },
@@ -121,7 +103,6 @@ const getProfile = catchAsync(async (req, res) => {
   // ];
   // let Record = await generalService.getRecordAggregate(modelName, aggregateArr);
   const data = await getRecordAndSort(modelName, condition)
-  console.log('recor', data);
 
   res.send({
     status: constant.SUCCESS,
@@ -130,6 +111,7 @@ const getProfile = catchAsync(async (req, res) => {
     data
   });
 });
+
 const deleteRecord = catchAsync(async (req, res) => {
   // const data = req.body;
   const {id} = req.params;
@@ -146,7 +128,7 @@ const deleteRecord = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  signUp,
+  addRetailer,
   signIn,
   updateProfile,
   getProfile,

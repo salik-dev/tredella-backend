@@ -148,7 +148,6 @@ const signUp = async (req, res, next) => {
   const data = req.body;
 
   const Schema = joi.object({
-    // userId: joi.string().required(), // Need to confirmation
     fullName: joi.string().trim().lowercase().required(),
     userName: joi.string().trim().lowercase().required(),
     email: joi.string().email().trim().lowercase().required(),
@@ -156,7 +155,6 @@ const signUp = async (req, res, next) => {
     password: joi.string().trim().required(),
     plateForm: joi.string().valid('app', 'google', 'website', 'portal').default('portal'),
     status: joi.string().valid('pending', 'active', 'block').default('pending'),
-    role: joi.string().valid('buyer', 'retailer', 'wholeSeller', 'superAdmin', 'admin').default('buyer'),
   });
 
   const { error } = Schema.validate(data, { allowUnknown: true });

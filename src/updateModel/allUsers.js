@@ -4,11 +4,16 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const secretKey = process.env.SECRET_KEY;
 
-const buyerSchema = new mongoose.Schema(
+const generateRandomOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+const allUserSchema = new mongoose.Schema(
   {
-    // userId: {
-    //   type: String, // Need to be confirmation
-    // },
+    userId: {
+      type: String,
+      unique: true,
+    },
     fullName: {
       type: String,
       lowercase: true,
@@ -40,7 +45,6 @@ const buyerSchema = new mongoose.Schema(
       trim: true,
       required: [true, "password is required"],
     },
-
     plateForm: {
       type: String,
       enum: ["app", "google", "website", "portal"],
@@ -56,6 +60,14 @@ const buyerSchema = new mongoose.Schema(
       enum: ["buyer", "retailer", "wholeSeller", "superAdmin", "admin"],
       default: "buyer",
     },
+    otp: {
+      type: String,
+      length: 6,
+    },
+    otpExpiresAt: {
+      type: Date,
+      expires: 120, // TTL in seconds (10 minutes)
+    },
     profileImageUrl: {
       type: String,
       default: null,
@@ -66,7 +78,60 @@ const buyerSchema = new mongoose.Schema(
   }
 );
 
-buyerSchema.methods.generateAuthToken = async function (extra = "") {
+// Middleware to set OTP and otpExpiresAt before saving the document
+allUserSchema.pre("save", async function (next) {
+  if (this.isModified("otp") || !this.otp) {
+    this.otp = generateRandomOTP();
+    this.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // Current time + 10 minutes
+  }
+  if (!this.userId) {
+    try {
+      let prefix;
+      switch (this.role) {
+        case 'buyer':
+          prefix = 's';
+          break;
+        case 'wholeSeller':
+          prefix = 'ws-';
+          break;
+        case 'retailer':
+        default:
+          prefix = 'r';
+          break;
+      }
+      // Find the highest userId with the same prefix
+      const regex = new RegExp(`^${prefix}\\d+$`);
+      const lastUser = await this.constructor.findOne({ userId: regex }).sort({ userId: -1 });
+      if (lastUser && lastUser.userId) {
+        const lastIdNumber = parseInt(lastUser.userId.replace(prefix, ''), 10);
+        this.userId = `${prefix}${lastIdNumber + 1}`;
+      } else {
+        this.userId = `${prefix}1`; // Default to r1, s1, ws-1 if no users found
+      }
+      next();
+    } catch (err) {
+      next(err);
+    }
+  } else {
+    next();
+  }
+});
+
+// Middleware to remove OTP after 5 seconds
+allUserSchema.post("save", function(doc, next) {
+  if (doc.otp) {
+    setTimeout(async () => {
+      try {
+        await this.constructor.updateOne({ _id: doc._id }, { $unset: { otp: 1 } });
+      } catch (error) {
+        console.error("Error removing OTP:", error);
+      }
+    }, 10 * 60 * 1000); // 10 minutes
+  }
+  next();
+});
+
+allUserSchema.methods.generateAuthToken = async function (extra = "") {
   let user = this;
   let access = "auth";
 
@@ -88,7 +153,7 @@ buyerSchema.methods.generateAuthToken = async function (extra = "") {
   });
 };
 
-buyerSchema.statics.updateLastRequest = async function (_id) {
+allUserSchema.statics.updateLastRequest = async function (_id) {
   let buyer = this;
   let lastApiRequest = new Date();
   let doc = await buyer.findOneAndUpdate(
@@ -99,7 +164,7 @@ buyerSchema.statics.updateLastRequest = async function (_id) {
 };
 
 //===================== Password hash middleware =================//
-buyerSchema.pre("save", function save(next) {
+allUserSchema.pre("save", function save(next) {
   const user = this;
   if (!user.isModified("password")) {
     return next();
@@ -119,7 +184,7 @@ buyerSchema.pre("save", function save(next) {
 });
 
 //===================== Helper method for validating user's password =================//
-buyerSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
+allUserSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
   try {
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
       cb(err, isMatch);
@@ -129,7 +194,7 @@ buyerSchema.methods.comparePassword = function comparePassword(candidatePassword
   }
 };
 
-buyerSchema.statics.findByToken = function (token) {
+allUserSchema.statics.findByToken = function (token) {
   let buyer = this;
   let decoded;
 
@@ -145,5 +210,5 @@ buyerSchema.statics.findByToken = function (token) {
   });
 };
 
-const Buyer = mongoose.model("Buyer", buyerSchema);
-module.exports = Buyer;
+const allUser = mongoose.model("allUser", allUserSchema);
+module.exports = allUser;

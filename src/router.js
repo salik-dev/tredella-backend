@@ -48,5 +48,7 @@ router.get("/get-wholeSeller", wholeSellerController.getProfile);
 router.put("/update-wholeSeller", wholeSellerController.updateProfile);
 router.delete("/delete-wholeSeller", wholeSellerController.deleteRecord);
 
+router.get("/test-salik", wholeSellerController.testSalik);
+
 
 module.exports = router;

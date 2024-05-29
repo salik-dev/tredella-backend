@@ -1,11 +1,16 @@
 const catchAsync = require("../utils/catchAsync");
 // const constant = require("../utils/constant");
 const constant = require("../updateUtils/constant");
-const  generalService = require("../updateServices/generalOperation");
-const { addRecord, getRecordAndSort, findAndModifyRecord, removeRecord } = require("../updateServices/commonOperation");
+const generalService = require("../updateServices/generalOperation");
+const {
+  addRecord,
+  getRecordAndSort,
+  findAndModifyRecord,
+  removeRecord,
+} = require("../updateServices/commonOperation");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
-const  _ = require("lodash");
+const _ = require("lodash");
 const guid = require("guid");
 const { incrementField } = require("../utils/commonFunctions");
 const countriesList = require("../utils/countriesList");
@@ -13,17 +18,24 @@ const saltRounds = 10;
 const modelName = "allUser";
 
 const addWholeSeller = catchAsync(async (req, res) => {
-  const {fullName, userName, email, phoneNumber, password, platForm, status} = req.body;
+  const { fullName, userName, email, phoneNumber, password, platForm, status } =
+    req.body;
   const role = "wholeSeller";
   // Need to implement Global Validation Utils ==> pending
-  const wholeSellerUser = await addRecord(modelName, {fullName, userName, email, phoneNumber, password, platForm, status, role});
-  wholeSellerUser = await 
-
-  res.status(constant.STATUS_OK).json({
-    message: constant.USER_REGISTER_SUCCESS,
-    data: wholeSellerUser
+  const wholeSellerUser = await addRecord(modelName, {
+    fullName,
+    userName,
+    email,
+    phoneNumber,
+    password,
+    platForm,
+    status,
+    role,
   });
-
+  wholeSellerUser = await res.status(constant.STATUS_OK).json({
+    message: constant.USER_REGISTER_SUCCESS,
+    data: wholeSellerUser,
+  });
 });
 const signIn = catchAsync(async (req, res, next) => {
   const data = req.body;
@@ -65,15 +77,23 @@ const signIn = catchAsync(async (req, res, next) => {
   })(req, res, next);
 });
 const updateProfile = catchAsync(async (req, res, next) => {
-  const {fullName, userName, email, phoneNumber, password, platForm, status, role} = req.body;
-
+  const {
+    fullName,
+    userName,
+    email,
+    phoneNumber,
+    password,
+    platForm,
+    status,
+    role,
+  } = req.body;
 
   // const user = req.user;
-  const {id} = req.params
+  const { id } = req.params;
   const wholeSellerRecord = await findAndModifyRecord(
     modelName,
     { _id: id },
-    {fullName, userName, email, phoneNumber, password, platForm, status, role}
+    { fullName, userName, email, phoneNumber, password, platForm, status, role }
   );
 
   res.status(200).send({
@@ -83,11 +103,10 @@ const updateProfile = catchAsync(async (req, res, next) => {
   });
 });
 
-
 const getProfile = catchAsync(async (req, res) => {
   // const user = req.user; // use when JWT auth active
   // const {id} = req.params;
- const condition = {role: "wholeSeller"}
+  const condition = { role: "wholeSeller" };
 
   // let aggregateArr = [
   //   { $match: { _id: id } },
@@ -103,19 +122,19 @@ const getProfile = catchAsync(async (req, res) => {
   //   },
   // ];
   // let Record = await generalService.getRecordAggregate(modelName, aggregateArr);
-  const Record = await getRecordAndSort(modelName, condition)
+  const Record = await getRecordAndSort(modelName, condition);
 
   res.send({
     status: constant.SUCCESS,
     message: "Record fetch Successfully",
     // Record: Record[0],
-    Record
+    Record,
   });
 });
 
 const deleteRecord = catchAsync(async (req, res) => {
   // const data = req.body;
-  const {id} = req.body;
+  const { id } = req.body;
 
   const Record = await removeRecord(modelName, {
     _id: id,
@@ -128,10 +147,17 @@ const deleteRecord = catchAsync(async (req, res) => {
   });
 });
 
+const testSalik = catchAsync(async (req, res) => {
+  res.send({
+    message: "test salik",
+  });
+});
+
 module.exports = {
   addWholeSeller,
   signIn,
   updateProfile,
   getProfile,
   deleteRecord,
+  testSalik,
 };

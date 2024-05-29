@@ -15,14 +15,9 @@ AWS.config.update({
 });
 
 // ===================      All Controllers   ==================//
-const { signUp, signIn } = require("./updateController/auth");
+const { welCome, signUp, signIn } = require("./updateController/auth");
 const buyerController = require("./updateController/buyer");
-const {
-  addRetailer,
-  updateProfile,
-  getProfile,
-  deleteRecord,
-} = require("./updateController/retailer");
+const { addRetailer, updateProfile, getProfile, deleteRecord,} = require("./updateController/retailer");
 const wholeSellerController = require("./updateController/wholeSeller");
 
 //==================== Validators =============================
@@ -52,5 +47,6 @@ router.post("/add-wholeSeller", wholeSellerController.addWholeSeller);
 router.get("/get-wholeSeller", wholeSellerController.getProfile);
 router.put("/update-wholeSeller", wholeSellerController.updateProfile);
 router.delete("/delete-wholeSeller", wholeSellerController.deleteRecord);
+
 
 module.exports = router;

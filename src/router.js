@@ -19,14 +19,13 @@ const { welCome, signUp, signIn } = require("./updateController/auth");
 const buyerController = require("./updateController/buyer");
 const { addRetailer, updateProfile, getProfile, deleteRecord,} = require("./updateController/retailer");
 const wholeSellerController = require("./updateController/wholeSeller");
+const { addRetailerCategory, getRetailerCategory, udpateretailerCategory, deleteRetailerCategory } = require("./updateController/retailCategory");
+const { addRetailerSubCategory, getRetailerSubCategory, updateRetailerSubCategory, deleteRetailerSubCategory } = require("./updateController/retailerSubCategory");
 
 //==================== Validators =============================
-// const authValidator = require("./validation/auth");
 const authValidator = require("./updateValidators/buyer");
 
 //================== signIn/signOut Routing ==========================//
-// router.post("/signUp", authValidator.signUp, buyerController.signUp);
-// router.post("/signUp", authValidator.signUp, buyerController.signUp);
 router.post("/signUp", signUp);
 router.post("/login", signIn);
 
@@ -47,6 +46,18 @@ router.post("/add-wholeSeller", wholeSellerController.addWholeSeller);
 router.get("/get-wholeSeller", wholeSellerController.getProfile);
 router.put("/update-wholeSeller", wholeSellerController.updateProfile);
 router.delete("/delete-wholeSeller", wholeSellerController.deleteRecord);
+
+// RETAILER-CATEGORY ROUTING
+router.post("/add-retailerCategory", addRetailerCategory);
+router.get("/get-retailerCategory", getRetailerCategory);
+router.put("/update-retailerCategory", udpateretailerCategory);
+router.delete("/delete-retailerCategory", deleteRetailerCategory);
+
+// RETAILER-SUB-CATEGORY ROUTING
+router.post("/add-retailerSubCategory", addRetailerSubCategory);
+router.get("/get-retailerSubCategory", getRetailerSubCategory);
+router.put("/update-retailerSubCategory", updateRetailerSubCategory);
+router.delete("/delete-retailerSubCategory", deleteRetailerSubCategory);
 
 router.get("/test-salik", wholeSellerController.testSalik);
 

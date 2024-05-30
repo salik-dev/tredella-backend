@@ -1,7 +1,7 @@
 "use strict";
 const mongoose = require("mongoose");
 
-const RetailSubCategory = new mongoose.Schema(
+const RetailerSubCategory = new mongoose.Schema(
   {
     subCategoryId: {
       type: String,
@@ -48,4 +48,5 @@ const RetailSubCategory = new mongoose.Schema(
   }
 );
 
-mongoose.model("RetailSubCategory", RetailSubCategory);
+const retailerSubCategory = mongoose.model("RetailerSubCategory", RetailerSubCategory);
+module.exports = retailerSubCategory

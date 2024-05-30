@@ -1,11 +1,8 @@
 "use strict";
 const mongoose = require("mongoose");
 
-const RetailSubCategory = new mongoose.Schema(
+const RetailerSubCategory = new mongoose.Schema(
   {
-    subCategoryId: {
-      type: String,
-    },
     name: {
       type: String,
       trim: true,
@@ -13,9 +10,9 @@ const RetailSubCategory = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
-    parentId: {
+    retailerCategoryId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      ref: "RetailerCategory",
     },
     percentage: {
       type: Number,
@@ -27,25 +24,10 @@ const RetailSubCategory = new mongoose.Schema(
     childCategories: {
       type: Array,
     },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  {
-    versionKey: false,
   },
   {
     timestamps: true,
   }
 );
 
-mongoose.model("RetailSubCategory", RetailSubCategory);
+mongoose.model("RetailerSubCategory", RetailerSubCategory);

@@ -114,21 +114,6 @@ const getProfile = catchAsync(async (req, res) => {
   // const user = req.user; // use when JWT auth active
   // const {id} = req.params;
   const condition = {role: "buyer"};
-
-  // let aggregateArr = [
-  //   { $match: { _id: id } },
-  //   {
-  //     $project: {
-  //       fullName: 1,
-  //       userName: 1,
-  //       email: 1,
-  //       phoneNumber: 1,
-  //       status: 1,
-  //       role: 1,
-  //     },
-  //   },
-  // ];
-  // let Record = await generalService.getRecordAggregate(modelName, aggregateArr);
   const Record = await getRecordAndSort(modelName, condition)
 
   res.send({

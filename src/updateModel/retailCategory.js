@@ -1,37 +1,20 @@
 "use strict";
 const mongoose = require("mongoose");
 
-const RetailCategory = new mongoose.Schema(
+const RetailerCategorySchema = new mongoose.Schema(
   {
-    categoryId: {
-      type: String,
-    },
     name: {
       type: String,
       trim: true,
-      required: true,
+      required: [true, 'retailer category is required'],
       unique: true,
       lowercase: true,
     },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  {
-    versionKey: false,
   },
   {
     timestamps: true,
   }
 );
 
-mongoose.model("RetailCategory", RetailCategory);
+const retailerCategory = mongoose.model("RetailerCategory", RetailerCategorySchema);
+module.exports = retailerCategory;

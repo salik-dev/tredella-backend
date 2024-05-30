@@ -1,22 +1,17 @@
 // JWT Import
 const jwt = require("jsonwebtoken");
+const util = require("util");
 const User = require("../updateModel/allUsers");
-
-const catchAsync = require("../utils/catchAsync");
+const catchAsync = require("../updateUtils/catchAsync");
 const constant = require("../updateUtils/constant");
-const {
-  addRecord,
-  getRecordAndSort,
-  findAndModifyRecord,
-  removeRecord,
-} = require("../updateServices/commonOperation");
+const { addRecord } = require("../updateServices/commonOperation");
 const modelName = "allUser";
 
 const signToken = (id) => {
-    return jwt.sign({ id}, process.env.SECRETE_STRING, {
-        expiresIn: process.env.LOGIN_EXPIRES_IN,
-      });
-}
+  return jwt.sign({ id }, process.env.SECRETE_STRING, {
+    expiresIn: process.env.LOGIN_EXPIRES_IN,
+  });
+};
 
 const signUp = catchAsync(async (req, res) => {
   const { fullName, userName, email, phoneNumber, password, platForm, status } =
@@ -56,23 +51,47 @@ const signIn = catchAsync(async (req, res, next) => {
       message: "Provide a valid Email or Password",
     });
   }
-  
-  const user = await User.findOne({email}).select("+password");
-  console.log('user', user);
-  if(!user || !(await user.comparePassword(password, user.password))){
+
+  const user = await User.findOne({ email }).select("+password");
+  console.log("user", user);
+  if (!user || !(await user.comparePassword(password, user.password))) {
     return res.status(500).json({
-        message: "Incorrect email or password"
-    })
+      message: "Incorrect email or password",
+    });
   }
   const token = signToken(user?._id);
   return res.status(200).json({
     message: "User Successfully Login",
     token,
-    Record: user
-  })
+    Record: user,
+  });
+});
+
+const protect = catchAsync(async (req, res, next) => {
+  let token = req.headers.authorization;
+  if (token && token.startsWith("bearer")) {
+    token = token.split(" ")[1];
+  }
+  if (!token) {
+    next(new Error("You are not logged in !", 401));
+  }
+  const decodedToken = await util.promisify(jwt.verify)(
+    token,
+    process.env.SECRETE_STRING
+  );
+  const {id} = decodedToken
+  console.log('token', id);
+  const user =await User.findById(decodedToken.id);
+  if (!user) {
+    return next(new Error("The user with current token does'nt exist", 401));
+  }
+  console.log('user', user);
+  req.user = user;
+  next();
 });
 
 module.exports = {
   signUp,
   signIn,
+  protect,
 };

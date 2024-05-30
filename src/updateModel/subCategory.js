@@ -48,6 +48,10 @@ const subCategorySchema = new mongoose.Schema(
     childCategories: {
       type: [ChildCategorySchema],
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "allUser",
+    }
   },
   {
     timestamps: true,

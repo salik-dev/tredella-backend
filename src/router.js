@@ -15,12 +15,28 @@ AWS.config.update({
 });
 
 // ===================      All Controllers   ==================//
-const { welCome, signUp, signIn } = require("./updateController/auth");
+const { welCome, signUp, signIn, protect } = require("./updateController/auth");
 const buyerController = require("./updateController/buyer");
-const { addRetailer, updateProfile, getProfile, deleteRecord,} = require("./updateController/retailer");
+const {
+  addRetailer,
+  updateProfile,
+  getProfile,
+  deleteRecord,
+} = require("./updateController/retailer");
 const wholeSellerController = require("./updateController/wholeSeller");
-const { addCategory, getCategory, updateCategory, deleteCategory } = require("./updateController/category");
-const { addSubCategory, getSubCategory, updateSubCategory, deleteSubCateory } = require("./updateController//subCategory");
+const {
+  addCategory,
+  getCategory,
+  updateCategory,
+  deleteCategory,
+} = require("./updateController/category");
+const {
+  addSubCategory,
+  getSubCategory,
+  updateSubCategory,
+  deleteSubCateory,
+} = require("./updateController//subCategory");
+const userCollection = "allUser";
 
 //==================== Validators =============================
 const authValidator = require("./updateValidators/buyer");
@@ -31,35 +47,34 @@ router.post("/login", signIn);
 
 // BUYER ROUTING
 router.post("/add-buyer", buyerController.signUp);
-router.get("/get-buyer", buyerController.getProfile);
-router.put("/update-buyer", buyerController.updateProfile);
-router.delete("/delete-buyer", buyerController.deleteRecord);
+router.get("/get-buyer", protect, buyerController.getProfile);
+router.put("/update-buyer", protect, buyerController.updateProfile);
+router.delete("/delete-buyer", protect, buyerController.deleteRecord);
 
 // RETAILER ROUTING
-router.get("/get-retailer", getProfile);
-router.post("/add-retailer", addRetailer);
-router.put("/update-retailer", updateProfile);
-router.delete("/delete-retailer", deleteRecord);
+router.get("/get-retailer", protect, getProfile);
+router.post("/add-retailer", protect, addRetailer);
+router.put("/update-retailer", protect, updateProfile);
+router.delete("/delete-retailer", protect, deleteRecord);
 
 // WHOLE-SELLER ROUTING
-router.post("/add-wholeSeller", wholeSellerController.addWholeSeller);
-router.get("/get-wholeSeller", wholeSellerController.getProfile);
-router.put("/update-wholeSeller", wholeSellerController.updateProfile);
+router.post("/add-wholeSeller", protect, wholeSellerController.addWholeSeller);
+router.get("/get-wholeSeller", protect, wholeSellerController.getProfile);
+router.put("/update-wholeSeller", protect, wholeSellerController.updateProfile);
 router.delete("/delete-wholeSeller", wholeSellerController.deleteRecord);
 
 // CATEGORY ROUTING
-router.post("/add-category", addCategory);
-router.get("/get-category", getCategory);
-router.put("/update-category", updateCategory);
-router.delete("/delete-category", deleteCategory);
+router.post("/add-category", protect, addCategory);
+router.get("/get-category", protect, getCategory);
+router.put("/update-category", protect, updateCategory);
+router.delete("/delete-category", protect, deleteCategory);
 
 // SUB-CATEGORY ROUTING
-router.post("/add-subcategory", addSubCategory);
-router.get("/get-subcategory", getSubCategory);
-router.put("/update-subcategory", updateSubCategory);
-router.delete("/delete-subcategory", deleteSubCateory);
+router.post("/add-subcategory", protect, addSubCategory);
+router.get("/get-subcategory", protect, getSubCategory);
+router.put("/update-subcategory", protect, updateSubCategory);
+router.delete("/delete-subcategory", protect, deleteSubCateory);
 
 router.get("/test-salik", wholeSellerController.testSalik);
-
 
 module.exports = router;

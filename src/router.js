@@ -19,8 +19,8 @@ const { welCome, signUp, signIn } = require("./updateController/auth");
 const buyerController = require("./updateController/buyer");
 const { addRetailer, updateProfile, getProfile, deleteRecord,} = require("./updateController/retailer");
 const wholeSellerController = require("./updateController/wholeSeller");
-const { addRetailerCategory, getRetailerCategory, udpateretailerCategory, deleteRetailerCategory } = require("./updateController/retailCategory");
-const { addRetailerSubCategory, getRetailerSubCategory, updateRetailerSubCategory, deleteRetailerSubCategory } = require("./updateController/retailerSubCategory");
+const { addCategory, getCategory, updateCategory, deleteCategory } = require("./updateController/category");
+const { addSubCategory, getSubCategory, updateSubCategory, deleteSubCateory } = require("./updateController//subCategory");
 
 //==================== Validators =============================
 const authValidator = require("./updateValidators/buyer");
@@ -47,17 +47,17 @@ router.get("/get-wholeSeller", wholeSellerController.getProfile);
 router.put("/update-wholeSeller", wholeSellerController.updateProfile);
 router.delete("/delete-wholeSeller", wholeSellerController.deleteRecord);
 
-// RETAILER-CATEGORY ROUTING
-router.post("/add-retailerCategory", addRetailerCategory);
-router.get("/get-retailerCategory", getRetailerCategory);
-router.put("/update-retailerCategory", udpateretailerCategory);
-router.delete("/delete-retailerCategory", deleteRetailerCategory);
+// CATEGORY ROUTING
+router.post("/add-category", addCategory);
+router.get("/get-category", getCategory);
+router.put("/update-category", updateCategory);
+router.delete("/delete-category", deleteCategory);
 
-// RETAILER-SUB-CATEGORY ROUTING
-router.post("/add-retailerSubCategory", addRetailerSubCategory);
-router.get("/get-retailerSubCategory", getRetailerSubCategory);
-router.put("/update-retailerSubCategory", updateRetailerSubCategory);
-router.delete("/delete-retailerSubCategory", deleteRetailerSubCategory);
+// SUB-CATEGORY ROUTING
+router.post("/add-subcategory", addSubCategory);
+router.get("/get-subcategory", getSubCategory);
+router.put("/update-subcategory", updateSubCategory);
+router.delete("/delete-subcategory", deleteSubCateory);
 
 router.get("/test-salik", wholeSellerController.testSalik);
 

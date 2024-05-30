@@ -1,9 +1,9 @@
 const catchAsync = require("../utils/catchAsync");
 const constant = require("../updateUtils/constant");
 const { addRecord, getRecordAndSort, findAndModifyRecord, removeRecord } = require("../updateServices/commonOperation");
-const modelName = "RetailerCategory";
+const modelName = "Category";
 
-const addRetailerCategory = catchAsync(async (req, res) => {
+const addCategory = catchAsync(async (req, res) => {
   const {name} = req.body;
   // Need to implement Global Validation Utils ==> pending
   const catecory = await addRecord(modelName, {name});
@@ -15,7 +15,7 @@ const addRetailerCategory = catchAsync(async (req, res) => {
 
 });
 
-const udpateretailerCategory = catchAsync(async (req, res, next) => {
+const updateCategory = catchAsync(async (req, res, next) => {
   const {id, name} = req.body;
   const categoryRecord = await findAndModifyRecord(
     modelName,
@@ -30,7 +30,7 @@ const udpateretailerCategory = catchAsync(async (req, res, next) => {
   });
 });
 
-const getRetailerCategory = catchAsync(async (req, res) => {
+const getCategory = catchAsync(async (req, res) => {
   // const user = req.user; // use when JWT auth active
   // const {id} = req.params;
  const condition = {}
@@ -56,7 +56,7 @@ const getRetailerCategory = catchAsync(async (req, res) => {
   });
 });
 
-const deleteRetailerCategory = catchAsync(async (req, res) => {
+const deleteCategory = catchAsync(async (req, res) => {
   const {id} = req.body;
 
   const Record = await removeRecord(modelName, {
@@ -71,8 +71,8 @@ const deleteRetailerCategory = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  addRetailerCategory,
-  udpateretailerCategory,
-  getRetailerCategory,
-  deleteRetailerCategory,
+  addCategory,
+  updateCategory,
+  getCategory,
+  deleteCategory,
 };

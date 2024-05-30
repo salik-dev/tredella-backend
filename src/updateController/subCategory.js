@@ -1,25 +1,25 @@
 const catchAsync = require("../utils/catchAsync");
 const constant = require("../updateUtils/constant");
 const { addRecord, getRecordAndSort, findAndModifyRecord, removeRecord } = require("../updateServices/commonOperation");
-const modelName = "RetailerSubCategory";
+const modelName = "subCategory";
 
-const addRetailerSubCategory = catchAsync(async (req, res) => {
-  const { name, retailerCategoryId, percentage, brands, childCategories } = req.body;
+const addSubCategory = catchAsync(async (req, res) => {
+  const { name, categoryId, percentage, brands, childCategories } = req.body;
   // Need to implement Global Validation Utils ==> pending
-  const subCategory = await addRecord(modelName, { name, retailerCategoryId, percentage, brands, childCategories });
+  const subCategory = await addRecord(modelName, { name, categoryId, percentage, brands, childCategories });
 
   res.status(constant.STATUS_OK).json({
-    message: "Retailer subCategory created successfully",
+    message: "Sub Category created successfully",
     Record: subCategory
   });
 });
 
-const updateRetailerSubCategory = catchAsync(async (req, res, next) => {
-  const { id, name, retailerCategoryId, percentage, brands, childCategories } = req.body;
+const updateSubCategory = catchAsync(async (req, res, next) => {
+  const { id, name, categoryId, percentage, brands, childCategories } = req.body;
   const subCategoryRecord = await findAndModifyRecord(
     modelName,
     { _id: id },
-    { name, retailerCategoryId, percentage, brands, childCategories }
+    { name, categoryId, percentage, brands, childCategories }
   );
 
   res.status(constant.STATUS_OK).send({
@@ -29,7 +29,7 @@ const updateRetailerSubCategory = catchAsync(async (req, res, next) => {
   });
 });
 
-const getRetailerSubCategory = catchAsync(async (req, res) => {
+const getSubCategory = catchAsync(async (req, res) => {
   const condition = {}; // Add any condition if needed
   const Record = await getRecordAndSort(modelName, condition);
 
@@ -40,7 +40,7 @@ const getRetailerSubCategory = catchAsync(async (req, res) => {
   });
 });
 
-const deleteRetailerSubCategory = catchAsync(async (req, res) => {
+const deleteSubCateory = catchAsync(async (req, res) => {
   const { id } = req.body;
   const Record = await removeRecord(modelName, {
     _id: id,
@@ -54,8 +54,8 @@ const deleteRetailerSubCategory = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  addRetailerSubCategory,
-  updateRetailerSubCategory,
-  getRetailerSubCategory,
-  deleteRetailerSubCategory,
+  addSubCategory,
+  updateSubCategory,
+  getSubCategory,
+  deleteSubCateory,
 };

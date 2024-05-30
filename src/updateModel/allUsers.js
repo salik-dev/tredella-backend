@@ -59,7 +59,6 @@ const allUserSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ["buyer", "retailer", "wholeSeller", "superAdmin", "admin"],
-      default: "buyer",
     },
     otp: {
       type: String,

@@ -27,8 +27,7 @@ let userFieldSendFrontEnd = [
   "favourites",
 ];
 const signUp = catchAsync(async (req, res) => {
-  const {fullName, userName, email, phoneNumber, password, platForm, status} = req.body;
-  const role = "buyer"
+  const {fullName, userName, email, phoneNumber, password, platForm, status, role} = req.body;
   // Need to implement Global Validation Utils ==> pending
   const buyerUser = await addRecord(modelName, {fullName, userName, email, phoneNumber, password, platForm, status, role});
   let token = null;

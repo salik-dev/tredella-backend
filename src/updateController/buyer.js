@@ -90,6 +90,7 @@ const signIn = catchAsync(async (req, res, next) => {
     });
   })(req, res, next);
 });
+
 const updateProfile = catchAsync(async (req, res, next) => {
   const {fullName, userName, email, phoneNumber, password, platForm, status, role} = req.body;
 

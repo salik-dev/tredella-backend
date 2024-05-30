@@ -15,7 +15,7 @@ AWS.config.update({
 });
 
 // ===================      All Controllers   ==================//
-const { welCome, signUp, signIn, protect } = require("./updateController/auth");
+const { signUp, signIn, protect } = require("./updateController/auth");
 const buyerController = require("./updateController/buyer");
 const {
   addRetailer,
@@ -36,10 +36,10 @@ const {
   updateSubCategory,
   deleteSubCateory,
 } = require("./updateController//subCategory");
-const userCollection = "allUser";
 
 //==================== Validators =============================
 const authValidator = require("./updateValidators/buyer");
+const { addStore, getStore, updateStore, deleteStore } = require("./updateController/store");
 
 //================== signIn/signOut Routing ==========================//
 router.post("/signUp", signUp);
@@ -74,6 +74,12 @@ router.post("/add-subcategory", protect, addSubCategory);
 router.get("/get-subcategory", protect, getSubCategory);
 router.put("/update-subcategory", protect, updateSubCategory);
 router.delete("/delete-subcategory", protect, deleteSubCateory);
+
+// STORE ROUTING
+router.post("/add-store", protect, addStore);
+router.get("/get-store", protect, getStore);
+router.put("/update-store", protect, updateStore);
+router.delete("/delete-store", protect, deleteStore);
 
 router.get("/test-salik", wholeSellerController.testSalik);
 

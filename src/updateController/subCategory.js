@@ -5,7 +5,7 @@ const modelName = "subCategory";
 
 const addSubCategory = catchAsync(async (req, res) => {
   const { name, categoryId, percentage, brands, childCategories } = req.body;
-  // Need to implement Global Validation Utils ==> pending
+  // Need to implement Global Validation Utils pending
   const subCategory = await addRecord(modelName, { name, categoryId, percentage, brands, childCategories });
 
   res.status(constant.STATUS_OK).json({

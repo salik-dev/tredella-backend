@@ -37,13 +37,13 @@ router.put("/update-buyer", protect, updateBuyer);
 router.delete("/delete-buyer", protect, deleteBuyer);
 
 // RETAILER ROUTING
-router.post("/add-retailer", protect, signUp);
+router.post("/add-retailer", signUp);
 router.get("/get-retailer", protect, getRetailer);
 router.put("/update-retailer", protect, updateRetailer);
 router.delete("/delete-retailer", protect, deleteRetailer);
 
 // WHOLE-SELLER ROUTING
-router.post("/add-wholeSeller", protect, signUp);
+router.post("/add-wholeSeller", signUp);
 router.get("/get-wholeSeller", protect, getWholeSeller);
 router.put("/update-wholeSeller", protect, updateWholeSeller);
 router.delete("/delete-wholeSeller", deleteWholeSeller);

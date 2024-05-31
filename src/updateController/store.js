@@ -1,12 +1,13 @@
 const catchAsync = require("../utils/catchAsync");
 const constant = require("../updateUtils/constant");
 const { addRecord, getRecordAndSort, findAndModifyRecord, removeRecord } = require("../updateServices/commonOperation");
-const modelName = "store";
+const modelName = "Store";
 
 const addStore = catchAsync(async (req, res) => {
   const { name, categories } = req.body;
-
-  const newStore = await addRecord(modelName, { name, categories });
+  const createdBy = req.user._id;
+  console.log('create by', createdBy);
+  const newStore = await addRecord(modelName, { name, categories, createdBy });
 
   res.status(constant.STATUS_OK).json({
     message: "Store created successfull",

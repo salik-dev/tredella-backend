@@ -3,21 +3,7 @@ const constant = require("../updateUtils/constant");
 const { addRecord, getRecordAndSort, findAndModifyRecord, removeRecord } = require("../updateServices/commonOperation");
 const modelName = "allUser";
 
-const addRetailer = catchAsync(async (req, res) => {
-  const {fullName, userName, email, phoneNumber, password, platForm, status} = req.body;
-  const role = "retailer";
-  // Need to implement Global Validation Utils ==> pending
-  const retailerUser = await addRecord(modelName, {fullName, userName, email, phoneNumber, password, platForm, status, role});
-  retailerUser = await 
-
-  res.status(constant.STATUS_OK).json({
-    message: constant.USER_REGISTER_SUCCESS,
-    Record: retailerUser
-  });
-
-});
-
-const updateProfile = catchAsync(async (req, res, next) => {
+const updateRetailer = catchAsync(async (req, res, next) => {
   const {fullName, userName, email, phoneNumber, password, platForm, status, role} = req.body;
 
 
@@ -36,7 +22,7 @@ const updateProfile = catchAsync(async (req, res, next) => {
   });
 });
 
-const getProfile = catchAsync(async (req, res) => {
+const getRetailer = catchAsync(async (req, res) => {
  const condition = {role: "retailer"}
   const Record = await getRecordAndSort(modelName, condition)
 
@@ -48,7 +34,7 @@ const getProfile = catchAsync(async (req, res) => {
   });
 });
 
-const deleteRecord = catchAsync(async (req, res) => {
+const deleteRetailer = catchAsync(async (req, res) => {
   // const Record = req.body;
   const {id} = req.body;
 
@@ -64,8 +50,7 @@ const deleteRecord = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  addRetailer,
-  updateProfile,
-  getProfile,
-  deleteRecord,
+  updateRetailer,
+  getRetailer,
+  deleteRetailer,
 };

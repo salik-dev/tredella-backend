@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const {ObjectId} = mongoose.Schema.Types;
 
 // Subcategory Schema
 const subCategorySchema = new Schema({
   subCategoryId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectId,
     ref: "subCategory",
     required: true,
   },
@@ -17,7 +18,7 @@ const subCategorySchema = new Schema({
 // Category Schema
 const categorySchema = new Schema({
   categoryId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectId,
     ref: "category",
     required: true,
   },
@@ -30,7 +31,11 @@ const storeSchema = new Schema({
     type: String,
     required: true
   },
-  categories: [categorySchema] // array of category schemas
+  categories: [categorySchema],  // array of category schemas
+  createdBy: {
+    type: ObjectId,
+    ref: "allUser"
+  }
 });
 
 // Create the Store model

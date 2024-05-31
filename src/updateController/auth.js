@@ -1,9 +1,16 @@
-// JWT Import
+// Express Import
 const jwt = require("jsonwebtoken");
 const util = require("util");
+
+// Modal Imports
 const User = require("../updateModel/allUsers");
+const Store = require('../updateModel/store');
+
+// Utils Imports
 const catchAsync = require("../updateUtils/catchAsync");
 const constant = require("../updateUtils/constant");
+
+// Common Operation Imports
 const { addRecord } = require("../updateServices/commonOperation");
 const modelName = "allUser";
 
@@ -14,9 +21,8 @@ const signToken = (id) => {
 };
 
 const signUp = catchAsync(async (req, res) => {
-  const { fullName, userName, email, phoneNumber, password, platForm, status } =
-    req.body;
-  const role = "buyer";
+  let { fullName, userName, email, phoneNumber, password, platForm, status, role } = req.body;
+  role = "retailer"
   // Need to implement Global Validation Utils ==> pending
   const User = await addRecord(modelName, {
     fullName,
@@ -85,13 +91,25 @@ const protect = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(new Error("The user with current token does'nt exist", 401));
   }
-  console.log('user', user);
+
   req.user = user;
   next();
 });
+
+const storeVerification = catchAsync(async (req, res, next) => {
+  const id = req.user._id;
+  // Verifying Store exist or not
+  const storeExist = await Store.findOne({createdBy: id});
+  if(!storeExist){
+    return next(new Error("Please create a store first before proceeding", 404));
+  }
+  req.store = storeExist;
+  next();
+})
 
 module.exports = {
   signUp,
   signIn,
   protect,
+  storeVerification,
 };

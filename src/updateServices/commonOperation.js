@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Buyer = require("../updateModel/allUsers");
 const RetailerCategory = require('../updateModel/category');
 const SubCategory = require('../updateModel/subCategory');
+const Store = require("../updateModel/store");
 
 const addRecord = async (collectionName, reqData) => {
   const Collection = mongoose.model(`${collectionName}`);

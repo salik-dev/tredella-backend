@@ -15,11 +15,16 @@ const logger = require("morgan");
 require("./src/utils/database");
 
 const app = express();
-app.use(cors({
-  origin: 'http://localhost:5173', // Replace with your frontend origin
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://tredella-seller-portal.vercel.app",
+    ], // Replace with your frontend origin
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 const server = http.createServer(app);
 
 app.use(

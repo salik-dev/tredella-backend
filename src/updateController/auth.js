@@ -57,12 +57,12 @@ const signIn = catchAsync(async (req, res, next) => {
       message: "Provide a valid Email or Password",
     });
   }
-
+  
   const user = await User.findOne({ email }).select("+password");
-  console.log("user", user);
+  console.log('login data', req.body, user);
   if (!user || !(await user.comparePassword(password, user.password))) {
     return res.status(500).json({
-      message: "Incorrect email or password",
+      message: "Incorrect emaidgfgl or password",
     });
   }
   const token = signToken(user?._id);

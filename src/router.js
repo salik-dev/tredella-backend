@@ -1,5 +1,5 @@
 const Router = require("express").Router;
-const router = new Router();
+const router = new Router
 const { authenticate, isAdmin } = require("./middleware/authenticate");
 const multer = require("multer");
 const multerS3 = require("multer-s3");

@@ -3,7 +3,6 @@ const http = require("http");
 const path = require("path");
 const bodyParser = require("body-parser");
 const router = require("./src/router");
-const passport = require("passport");
 const session = require("express-session");
 const express = require("express");
 const cors = require("cors");
@@ -14,18 +13,15 @@ const AppError = require("./src/utils/appError");
 const logger = require("morgan");
 
 require("./src/utils/database");
-require("./src/utils/passport");
 
 const app = express();
+app.use(cors({
+  origin: 'http://localhost:5173', // Replace with your frontend origin
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+}));
 const server = http.createServer(app);
-app.use(
-  cors({
-    origin: [ "http://localhost:3000", "http://localhost:5173", "http://localhost:3001"],
-    credentials: true,
-  })
-);
 
-app.use(passport.initialize());
 app.use(
   session({
     secret: process.env.SECRET_KEY,
@@ -33,7 +29,6 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use(passport.session());
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
